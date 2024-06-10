@@ -1,0 +1,441 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* all custom css write here
+please don't go anywhere  */
+
+/* -----------------------------
+    1.0 Global Styles start
+---------------------------- */
+/* Checked state */
+.label-cbx {
+  user-select: none;
+  cursor: pointer;
+  margin-bottom: 0;
+}
+.label-cbx input:checked + .checkbox {
+  border-color: #000000;
+}
+.label-cbx input:checked + .checkbox svg path {
+  fill: #000000;
+}
+.label-cbx input:checked + .checkbox svg polyline {
+  stroke-dashoffset: 0;
+}
+.label-cbx:hover .checkbox svg path {
+  stroke-dashoffset: 0;
+}
+.label-cbx .checkbox {
+  position: relative;
+  top: 2px;
+  float: left;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #c8ccd4;
+  border-radius: 3px;
+}
+.label-cbx .checkbox svg {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+}
+.label-cbx .checkbox svg path {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 71px;
+  stroke-dashoffset: 71px;
+  transition: all 0.6s ease;
+}
+.label-cbx .checkbox svg polyline {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 18px;
+  stroke-dashoffset: 18px;
+  transition: all 0.3s ease;
+}
+.label-cbx > span {
+  pointer-events: none;
+  vertical-align: middle;
+}
+
+.cntr {
+  position: absolute;
+  top: 45%;
+  left: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.invisible {
+  position: absolute;
+  z-index: -1;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+/* -----------------------------
+    1.0 Global Styles end
+---------------------------- */
+
+/* -----------------------------
+    2.0 Header Styles start
+---------------------------- */
+.loader {
+  position: relative;
+  width: 120px;
+  height: 90px;
+  margin: 0 auto;
+}
+.loader:before {
+  content: "";
+  position: absolute;
+  bottom: 30px;
+  left: 50px;
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #f26522;
+  animation: loading-bounce 0.5s ease-in-out infinite alternate;
+}
+.loader:after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 7px;
+  width: 45px;
+  border-radius: 4px;
+  box-shadow: 0 5px 0 #000000, -35px 50px 0 #000000, -70px 95px 0 #000000;
+  animation: loading-step 1s ease-in-out infinite;
+}
+
+@keyframes loading-bounce {
+  0% {
+    transform: scale(1, 0.7);
+  }
+  40% {
+    transform: scale(0.8, 1.2);
+  }
+  60% {
+    transform: scale(1, 1);
+  }
+  100% {
+    bottom: 140px;
+  }
+}
+@keyframes loading-step {
+  0% {
+    box-shadow: 0 10px 0 rgba(0, 0, 0, 0), 0 10px 0 #000000,
+      -35px 50px 0 #000000, -70px 90px 0 #000000;
+  }
+  100% {
+    box-shadow: 0 10px 0 #fff, -35px 50px 0 #000000, -70px 90px 0 #000000,
+      -70px 90px 0 rgba(0, 0, 0, 0);
+  }
+}
+
+/* -----------------------------
+    2.0 Header Styles end
+---------------------------- */
+#overviewscroll::-webkit-scrollbar {
+  display: none;
+}
+#time_option::-webkit-scrollbar {
+  display: none;
+}
+
+/* -----------------------------
+    3.0 input Styles start
+---------------------------- */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 85px;
+  height: 38px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.toggle-switch input[type="checkbox"] {
+  display: none;
+}
+
+.toggle-switch-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 80%;
+  height: 80%;
+  background-color: #ddd;
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 2px #ccc;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.toggle-switch-handle {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+.toggle-switch::before {
+  content: "";
+  position: absolute;
+  top: -25px;
+  right: -35px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #aaa;
+  text-shadow: 1px 1px #fff;
+  transition: color 0.3s ease-in-out;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-handle {
+  transform: translateX(45px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2), 0 0 0 3px black;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch-background {
+  background-color: black;
+  box-shadow: inset 0 0 0 2px black;
+}
+
+.toggle-switch input[type="checkbox"]:checked + .toggle-switch:before {
+  content: "On";
+  color: black;
+  right: -15px;
+}
+
+.toggle-switch
+  input[type="checkbox"]:checked
+  + .toggle-switch-background
+  .toggle-switch-handle {
+  transform: translateX(40px);
+}
+/* ----------------------------
+    3.0 scroll Styles end
+------------------------------ */
+#footer_text::-webkit-scrollbar {
+  display: none;
+}
+.time-option::-webkit-scrollbar {
+  display: none;
+}
+/* -------------------------------
+checkbox style
+--------------------------------- */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  user-select: none;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 1.3em;
+  width: 1.3em;
+  background-color: #ccc;
+  transition: all 0.3s;
+  border-radius: 5px;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #6ea089;
+  animation: pop 0.5s;
+  animation-direction: alternate;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container .checkmark:after {
+  left: 0.45em;
+  top: 0.25em;
+  width: 0.25em;
+  height: 0.5em;
+  border: solid white;
+  border-width: 0 0.15em 0.15em 0;
+  transform: rotate(45deg);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* ------------------------------------
+    4.0 day picker Styles start
+ --------------------------------------- */
+
+.rdp-day_today:not(.rdp-day_outside) {
+  color: #f26522;
+}
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  color: #fff;
+  opacity: 1;
+  background-color: #f26522 !important;
+}
+
+/* ------------------------------------
+     5.0 day picker Styles start
+ --------------------------------------- */
+.custom-time-picker {
+  font-family: Arial, sans-serif;
+  width: 312px;
+  height: 312px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.time-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  max-height: 250px;
+  overflow-y: scroll;
+}
+
+.time-option {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.time-option:hover {
+  background-color: #f0f0f0;
+}
+
+.selected {
+  background-color: #f26522;
+  color: #fff;
+}
+
+.selected-time {
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* ------------------------------------
+remove input number arrow
+ --------------------------------------- */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* ------------------------------------
+remove input checkbox
+ --------------------------------------- */
+input[type="checkbox"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 17px;
+  height: 17px;
+  border-radius: 5px;
+  outline: none;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+input[type="checkbox"]::before {
+  content: "";
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  background-color: rgb(221, 214, 214);
+  border: 1px solid darkgray;
+  border-radius: 5px;
+}
+
+input[type="checkbox"]:checked::before {
+  content: "\2713";
+  display: block;
+  color: white;
+  width: 17px;
+  height: 17px;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  background-color: rgb(0, 0, 0);
+  /* border: 1px solid rgb(0, 0, 0); */
+}
+
+/* only for interview */
+
+.bounce {
+  animation: bounce 3s ease-in-out infinite alternate;
+  animation-delay: 3s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-8px);
+  }
+  40% {
+    transform: translateX(5px);
+  }
+  60% {
+    transform: translateX(-5px);
+  }
+  80% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
