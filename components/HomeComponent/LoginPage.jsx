@@ -1,5 +1,4 @@
 "use client";
-import AuthNav from "@/components/global/authNav/authNav";
 import { fetchApi } from "@/utils/FetchApi";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,16 +33,12 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="">
-      <AuthNav />
-      <section className="flex mx-auto p-5 shadow-md max-w-[412px] mt-[10vh]">
-        <div className="">
+    <main className="flex justify-center items-center min-h-screen">
+      <section className="flex justify-center items-center mx-auto p-5 shadow-md min-w-[412px]">
+        <div className="w-full">
           <div>
-            <h3 className="text-2xl font-bold ">Login to your account!</h3>
-            <p className="text-sm text-[#6B7280] pt-2">
-              Lorem ipsum dolor sit amet consectetur. Risus enim scelerisque
-              fermentum fermentum.
-            </p>
+            <h3 className="text-2xl font-bold text-center">Login to your account!</h3>
+            
           </div>
 
           <form

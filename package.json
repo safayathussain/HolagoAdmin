@@ -1,11 +1,11 @@
 {
-  "name": "bestadmin",
+  "name": "holagoadmin",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 6000",
+    "dev": "next dev -p 7007",
     "build": "next build",
-    "start": "next start -p 6000",
+    "start": "next start -p 7007",
     "lint": "next lint"
   },
   "dependencies": {
