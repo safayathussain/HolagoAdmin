@@ -1,8 +1,9 @@
 "use client";
-import AuthNav from "@/components/global/authNav/authNav";
+import logo from "@/public/image/logo.svg";
 import Link from "next/link";
 import { useState } from "react";
 import { fetchApi } from "@/utils/FetchApi";
+import Image from "next/image";
 
 export default function Forgot() {
   const [confirm, setConfirm] = useState(false);
@@ -26,17 +27,20 @@ export default function Forgot() {
   };
 
   return (
-    <main className="">
-      <AuthNav />
-      <section className="flex mx-auto p-5 shadow-md max-w-[412px] mt-[20vh]">
+    <main className="flex justify-center items-center min-h-screen">
+      <section className="flex mx-auto p-5 shadow-md min-w-[412px]">
         {!confirm && (
-          <div className="my-3">
+          <div className="my-3 w-full">
             <div>
-              <h3 className="text-2xl font-bold">Forgot your password?</h3>
-              <p className="text-sm text-[#6B7280] pt-2">
-                Lorem ipsum dolor sit amet consectetur. Risus enim scelerisque
-                fermentum fermentum.
-              </p>
+            <Image
+              src={logo}
+              alt="logo"
+              width={150}
+              height={150}
+              className="mx-auto my-5"
+            />
+              <h3 className="text-2xl font-bold text-center">Forgot your password?</h3>
+              
             </div>
 
             <form

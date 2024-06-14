@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Cookies from "js-cookie";
+import Image from "next/image";
+import logo from "@/public/image/logo.svg";
 
 export default function LoginPage() {
   const [showError, setShowError] = useState(false);
@@ -37,8 +39,15 @@ export default function LoginPage() {
       <section className="flex justify-center items-center mx-auto p-5 shadow-md min-w-[412px]">
         <div className="w-full">
           <div>
+            <Image
+              src={logo}
+              alt="logo"
+              width={150}
+              height={150}
+              className="mx-auto my-5"
+            />
             <h3 className="text-2xl font-bold text-center">Login to your account!</h3>
-            
+
           </div>
 
           <form

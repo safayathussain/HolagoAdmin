@@ -5,6 +5,7 @@ import hidden from "@/public/image/view-off.svg";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import logo from "@/public/image/logo.svg";
 import { fetchApi } from "@/utils/FetchApi";
 
 export default function SetPassword() {
@@ -56,17 +57,20 @@ export default function SetPassword() {
   }, []);
 
   return (
-    <main className="">
-      <AuthNav />
-      <section className="flex mx-auto p-5 shadow-md max-w-[412px] mt-[20vh]">
+    <main className="flex justify-center items-center min-h-screen">
+      <section className="flex mx-auto p-5 shadow-md min-w-[412px]">
         {!confirm && (
-          <div className="my-3">
+          <div className="my-3 w-full">
             <div>
-              <h3 className="text-2xl font-bold">Reset your password</h3>
-              <p className="text-sm text-[#6B7280] pt-2">
-                Lorem ipsum dolor sit amet consectetur. Risus enim scelerisque
-                fermentum fermentum.
-              </p>
+            <Image
+              src={logo}
+              alt="logo"
+              width={150}
+              height={150}
+              className="mx-auto my-5"
+            />
+              <h3 className="text-2xl font-bold text-center">Reset your password</h3>
+            
             </div>
             <form
               onSubmit={handleSubmit}
@@ -142,7 +146,7 @@ export default function SetPassword() {
           </div>
         )}
         {confirm && (
-          <div className="flex flex-col justify-center items-center mx-auto text-center">
+          <div className="flex flex-col justify-center items-center mx-auto text-center w-full">
             <div className="">
               <div className="flex justify-center">
                 <svg

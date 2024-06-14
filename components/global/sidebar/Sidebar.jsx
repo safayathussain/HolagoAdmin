@@ -19,7 +19,7 @@ export default function Sidebar() {
     <aside className="md:flex hidden">
       <div className="min-h-screen flex flex-row w-[290px] shadow-xl">
         <div className="flex flex-col bg-white overflow-hidden px-3 w-full">
-          <div className="flex items-center justify-center my-5 w-full">
+          <div className="flex items-center justify-center mt-5 w-full">
             <Link className="w-full" href="/dashboard">
               <Image
                 src={logo}
@@ -27,11 +27,16 @@ export default function Sidebar() {
                 quality={100}
                 loading="lazy"
                 sizes="100vw"
-                className="w-full h-full object-contain "
+                className="object-contain "
               />
             </Link>
           </div>
-          <ul className="flex flex-col py-2">
+          <div className="bg-black rounded-3xl shadow-2xl p-5 my-5">
+            <h3 className="text-white text-lg font-semibold">Sales this month </h3>
+            <h1 className="text-white font-semibold text-2xl my-5">৳ 1,32,750</h1>
+            <span className="bg-white rounded-full text-lg font-semibold px-5 py-2">+32 Orders Today</span>
+          </div>
+          <ul className="flex flex-col ">
             <li>
               <Link
                 href="/dashboard"

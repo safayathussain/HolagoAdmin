@@ -2,7 +2,8 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { fetchApi } from "@/utils/FetchApi";
-import AuthNav from "@/components/global/authNav/authNav";
+import logo from "@/public/image/logo.svg";
+import Image from "next/image";
 
 const OtpVerify = () => {
   const [otpValues, setOtpValues] = useState(["", "", "", ""]);
@@ -99,15 +100,19 @@ const OtpVerify = () => {
   };
 
   return (
-    <section className="">
-      <AuthNav />
-      <section className="flex mx-auto p-5 shadow-md max-w-[412px] mt-[10vh]">
+    <section className="flex justify-center items-center min-h-screen">
+      <section className="flex mx-auto p-5 shadow-md min-w-[412px]">
         <div className="w-full">
           <div>
-            <h3 className="text-2xl font-bold">Email Verification</h3>
-            <p className="text-sm text-[#6B7280] pt-2">
-              Please enter the OTP sent to your email address.
-            </p>
+          <Image
+              src={logo}
+              alt="logo"
+              width={150}
+              height={150}
+              className="mx-auto my-5"
+            />
+            <h3 className="text-2xl font-bold text-center">Email Verification</h3>
+            
           </div>
           <form
             onSubmit={handleSubmit}
