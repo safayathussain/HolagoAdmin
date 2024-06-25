@@ -391,16 +391,16 @@ export default function AddProductPage() {
                   <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                     <div>
                       <div className="flex justify-start items-center gap-3">
-                        <img
+                        {/* <img
                           src="https://i.ibb.co/2k6sk2y/cropped-Favicon.png"
                           alt="cropped-Favicon"
                           border="0"
                           className="w-7 h-7 p-1 object-cover rounded-full bg-gray-200"
-                        />
+                        /> */}
                         <div className="flex flex-col">
-                          <p>Best Electronics</p>
+                          <p>holago</p>
                           <p className="text-xs">
-                            www.bestelectronics.com.bd - Electronics Store
+                            www.holago.com.bd -  Store
                           </p>
                         </div>
                       </div>

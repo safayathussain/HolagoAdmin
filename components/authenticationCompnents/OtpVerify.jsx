@@ -77,8 +77,7 @@ const OtpVerify = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      const email = JSON.parse(user).email;
+      const email = localStorage.getItem("email");
       setEmail(email);
     }
   }, []);
@@ -104,15 +103,16 @@ const OtpVerify = () => {
       <section className="flex mx-auto p-5 shadow-md min-w-[412px]">
         <div className="w-full">
           <div>
-          <Image
+            <Image
               src={logo}
               alt="logo"
               width={150}
               height={150}
               className="mx-auto my-5"
             />
-            <h3 className="text-2xl font-bold text-center">Email Verification</h3>
-            
+            <h3 className="text-2xl font-bold text-center">
+              Email Verification
+            </h3>
           </div>
           <form
             onSubmit={handleSubmit}

@@ -20,6 +20,7 @@ export default function Forgot() {
       await fetchApi("/user/resetUser", "POST", { email });
       setConfirm(true);
       setIsLoading(false);
+      localStorage.setItem("email", email);
     } catch (err) {
       console.error(err);
       setError("Failed to send otp email. Please try again.");

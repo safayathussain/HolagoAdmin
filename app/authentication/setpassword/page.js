@@ -50,9 +50,8 @@ export default function SetPassword() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const user = localStorage.getItem("user");
-      const storedEmail = user ? JSON.parse(user).email : "";
-      if (storedEmail) setEmail(storedEmail);
+      const email = localStorage.getItem("email");
+      setEmail(email);
     }
   }, []);
 
