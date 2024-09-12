@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/redux/providers";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,9 +11,43 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  
   return (
     <html lang="en">
-      <body className={inter.className}><Providers>{children}</Providers></body>
+      <body className={inter.className}>
+        <Providers>
+        <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  border: "1px solid #EEEEEE",
+                  borderRadius: "60px",
+                  fontWeight: 500
+                },
+                iconTheme: {
+                  primary: 'black',
+                  secondary: 'white',
+
+                },
+
+              },
+              error: {
+                style: {
+                  border: "1px solid #EEEEEE",
+                  borderRadius: "60px",
+                  fontWeight: 500
+                },
+                iconTheme: {
+                  primary: 'black',
+                  secondary: 'white',
+
+                },
+              },
+            }}
+          />
+          {children}
+          </Providers>
+        </body>
     </html>
   );
 }

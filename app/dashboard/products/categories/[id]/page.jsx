@@ -3,7 +3,7 @@ import SingleCtgPage from "@/components/dashboard/categoriespage/SingleCtgPage";
 import { useEffect, useState } from "react";
 
 export default function DynamicPage({ params }) {
-  const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
+  const API_ENDPOINT = process.env.NEXT_PUBLIC_BASE_API;
   const id = params.id;
 
   const [data, setData] = useState({});

@@ -13,7 +13,7 @@ export default function AddProductDynamicHead({ title }) {
             className="cursor-pointer w-5 md:w-10 h-5 md:h-10"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path d="M17 2L3 16L17 30" stroke="black" stroke-width="3" />
+            <path d="M17 2L3 16L17 30" stroke="black" strokeWidth="3" />
           </svg>
         </Link>
 

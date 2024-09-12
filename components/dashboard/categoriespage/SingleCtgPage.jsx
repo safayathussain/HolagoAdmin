@@ -125,7 +125,7 @@ export default function SingleCtgPage({ category }) {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <path d="M17 2L3 16L17 30" stroke="black" stroke-width="3" />
+                  <path d="M17 2L3 16L17 30" stroke="black" strokeWidth="3" />
                 </svg>
               </Link>
 

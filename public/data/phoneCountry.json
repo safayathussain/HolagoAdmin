@@ -1,0 +1,6 @@
+[
+    {"country": "Bangladesh", "shortname": "BD", "phone_code": "+88"},
+    {"country": "India", "shortname": "IN", "phone_code": "+91"},
+    {"country": "United States", "shortname": "USA", "phone_code": "+1"},
+    {"country": "United Kingdom", "shortname": "UK", "phone_code": "+44"}
+]

@@ -304,7 +304,7 @@ export default function SettingOption() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M11 2L3 10L11 18" stroke="black" stroke-width="3" />
+                <path d="M11 2L3 10L11 18" stroke="black" strokeWidth="3" />
               </svg>
               <h2 className="text-2xl font-bold ml-5">Digital Payments</h2>
             </div>
@@ -888,7 +888,7 @@ export default function SettingOption() {
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path d="M11 2L3 10L11 18" stroke="black" stroke-width="3" />
+                <path d="M11 2L3 10L11 18" stroke="black" strokeWidth="3" />
               </svg>
               <h2 className="text-2xl font-bold ml-5">New Orders</h2>
             </div>

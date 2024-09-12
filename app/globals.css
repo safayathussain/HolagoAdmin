@@ -44,9 +44,9 @@ please don't go anywhere  */
 .label-cbx .checkbox svg path {
   fill: none;
   stroke: #000000;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  strokeWidth: 2;
+  strokeLinecap: round;
+  strokeLinejoin: round;
   stroke-dasharray: 71px;
   stroke-dashoffset: 71px;
   transition: all 0.6s ease;
@@ -54,9 +54,9 @@ please don't go anywhere  */
 .label-cbx .checkbox svg polyline {
   fill: none;
   stroke: #fff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  strokeWidth: 2;
+  strokeLinecap: round;
+  strokeLinejoin: round;
   stroke-dasharray: 18px;
   stroke-dashoffset: 18px;
   transition: all 0.3s ease;
@@ -438,4 +438,114 @@ input[type="checkbox"]:checked::before {
   100% {
     transform: translateX(0);
   }
+}
+
+body {
+  font-family: var(--font-poppins);
+}
+
+.animate-rendering {
+  animation: fadeIn 0.5s ease forwards;
+}
+
+
+@layer components {
+  .container {
+    @apply max-w-[1440px] mx-auto px-5 md:px-8 lg:px-12 2xl:px-16
+  }
+
+  .section-title {
+    @apply text-2xl md:text-3xl
+  }
+}
+
+.gradient-line-footer {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.5) 50%, rgba(0, 0, 0, 0) 100%);
+            height: 1px;
+
+}
+
+
+
+.swiper-button-next {
+  color: rgb(95, 95, 95) !important;
+}
+
+.swiper-button-prev {
+  color: rgb(95, 95, 95) !important;
+}
+
+.black_bg_gradiant_d_to_u {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(0, 0, 0, 1) 100%);
+}
+
+
+.custom-checkbox {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+  border: 2px solid #D1D5DB;
+  /* Gray-300 */
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+  border-radius: 5px;
+
+}
+
+.custom-checkbox:checked {
+  background-color: #2C2C2C;
+  border-color: #2C2C2C;
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  top: 37%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 7px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+
+.otp-field input {
+  font-size: 40px !important;
+  border-bottom: 1px solid #e9eaeb;
+  width: 50px !important;
+  background-color: white;
+}
+
+.otp-field input:focus {
+  outline: 0;
+  border-color: #156CD7;
+  color: #156CD7;
+  
+}
+.box-input-otp input {
+  border: 1px solid #e9eaeb;
+border-radius: 5px;
+}
+
+.product-image-swiper  .swiper-pagination-bullet-active {
+  background: #ffffff !important;
+}
+.product-review-swiper .swiper-pagination-bullet-active {
+  background: #1B1B1B !important;
+}
+.product-review-swiper .swiper-button-prev {
+  display: none;
+}
+.product-review-swiper .swiper-button-next {
+margin-right: -10px;
+
+}
+
+
+.product-image-swiper > .swiper-pagination-bullets, .product-image-swiper > .swiper-pagination-bullets, .product-image-swiper > .swiper-pagination-horizontal {
+  top: 0 !important;
 }
