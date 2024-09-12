@@ -30,7 +30,10 @@ const page = () => {
             phone_number: phone,
             otp: otp
         }
-        const { data } = await FetchApi({ url: 'auth/api/verify-otp/', method: 'post', body: payload, isToast: true })
+        const { data } = await FetchApi({ url: 'auth/api/verify-otp/', method: 'post', body: payload, })
+        if(data.user.role !== 'admin') return toast.error('You are not admin')
+        if(data.user.id) toast.success('login successfully')
+        
         setAuth(data.user)
         if (data.user) {
             router.push('/dashboard')
