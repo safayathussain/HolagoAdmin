@@ -3,7 +3,6 @@ import PageHead from "@/components/global/pageHead/PageHead";
 
 import OrderTable from "@/components/dashboard/orderpage/OrderTable";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchOrders } from "@/redux/slice/orderSlice";
 import { useEffect } from "react";
 import Skeleton from "@/components/global/skeleton/Skeleton";
 
@@ -12,7 +11,7 @@ export default function OrdersPage() {
   const orders = useSelector((state) => state?.orders);
 
   useEffect(() => {
-    dispatch(fetchOrders());
+    // dispatch(fetchOrders());
   }, [dispatch]);
 
   const AllOrders = orders?.orders?.orders;

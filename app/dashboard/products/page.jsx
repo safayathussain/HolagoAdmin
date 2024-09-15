@@ -2,7 +2,6 @@
 import ProductTable from "@/components/dashboard/productpage/ProductTable";
 import PageHead from "@/components/global/pageHead/PageHead";
 import Skeleton from "@/components/global/skeleton/Skeleton";
-import { fetchProducts } from "@/redux/slice/productsSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -11,7 +10,7 @@ export default function ProductsPage() {
   const product = useSelector((state) => state?.products);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    // dispatch(fetchProducts());
   }, [dispatch]);
 
   // console.log(product?.products?.products); 
@@ -21,7 +20,7 @@ export default function ProductsPage() {
 
   return (
     <main>
-      {data.length === 0 ? (
+      {data.length < 0 ? (
         <Skeleton />
       ) : (
         <div>

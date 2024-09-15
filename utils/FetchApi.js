@@ -10,13 +10,12 @@ export const FetchApi = async ({
 }) => {
     const instance = axios.create({
         baseURL: process.env.NEXT_PUBLIC_BASE_API,
-        // headers: {
-        //     'Authorization': `Bearer ${store.getState().auth?.user?.token}`,
-        // }
+        headers: {
+            'Authorization': `Bearer ${store.getState().auth?.user.access}`,
+        }
     });
 
     let responsePromise;
-
     // Construct the appropriate request promise based on the HTTP method
     if (method === 'get') {
         responsePromise = instance.get(url);

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TextInputWithButton = ({ label, id, name, type = 'text', className, placeholder, buttonText = '', buttonClass='', rounded='xl', ...etc }) => {
+const TextInputWithButton = ({ label, id, name, type = 'text', className, placeholder, buttonText = '', buttonclassName='', rounded='xl', ...etc }) => {
     return (
         <div>
             <div>

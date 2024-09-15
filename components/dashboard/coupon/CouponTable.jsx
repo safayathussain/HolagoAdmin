@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import PrimaryButton from "@/components/global/primaryButton/PrimaryButton";
 
 export default function CouponTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -199,14 +200,14 @@ export default function CouponTable() {
             />
           </div>
           <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
+            {/* <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
               <button
                 onClick={exportPdf}
                 className="flex mx-auto py-2 text-nowrap px-3"
               >
                 Export As &#x2193;
               </button>
-            </div>
+            </div> */}
             <div className="mx-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
               <select className="bg-[#F9FAFB] mx-3 py-2 outline-none ">
                 <option className="bg-[#F9FAFB]" value="30">
@@ -239,6 +240,11 @@ export default function CouponTable() {
                 Outlets Address
               </option>
             </select>
+          </div>
+          <div>
+            <div className="ml-auto text-white border border-black bg-black rounded-lg shadow-md">
+              <Link href="/dashboard/cupon/add" className="flex justify-center items-center whitespace-nowrap px-2 py-1"><span className="text-xl font-semibold mr-1">+</span> <span>Add Cupon</span></Link>
+            </div>
           </div>
         </div>
       </div>
@@ -313,9 +319,8 @@ export default function CouponTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">

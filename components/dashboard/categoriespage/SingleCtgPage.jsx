@@ -1,27 +1,33 @@
 "use client";
+import PrimaryButton from "@/components/global/primaryButton/PrimaryButton";
 import Skeleton from "@/components/global/skeleton/Skeleton";
-import { fetchCategories } from "@/redux/slice/categorySlice";
-import { fetchApi } from "@/utils/FetchApi";
+import { ImgUrl } from "@/constants/urls";
+import { FetchApi, fetchApi } from "@/utils/FetchApi";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function SingleCtgPage({ category }) {
+  console.log(category)
+  let ctgData = category
   const [titleInputValue, setTitleInputValue] = useState("");
   const [descriptionInputValue, setDescriptionInputValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
-  const dispatch = useDispatch();
-  const categories = useSelector((state) => state?.categories);
-
+  const [categories, setcategories] = useState([])
+  const [CategoryImage, setCategoryImage] = useState(null)
+  const [showCoverImg, setshowCoverImg] = useState(true)
   useEffect(() => {
-    dispatch(fetchCategories());
-  }, [dispatch]);
+    const loadData = async () => {
+      const { data: categoriesData } = await FetchApi({ url: '/category/api/get-CategoryList' });
+      setcategories(categoriesData.data)
+    }
+    loadData()
+  }, []);
+  console.log(category.coverImage)
 
-  const AllCategories = categories?.categories?.categories;
-  const data = AllCategories || [];
 
   const calculateTitleProgress = (value) => {
     let progress = (value.length / 100) * 100;
@@ -67,37 +73,17 @@ export default function SingleCtgPage({ category }) {
   const handleUpdateCategory = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const categoryName = e.target.categoriesName.value;
-    const categoryDescription = e.target.note.value;
-    const parentCategory = e.target.parentCategory.value;
-    const title = e.target.seoTitle.value;
-    const metaDescription = e.target.seoDescription.value;
+    const formData = new FormData()
 
-    const updatedCategory = {
-      categoryName,
-      categoryDescription,
-      fetaureImage: "",
-      parentCategory,
-      title,
-      metaDescription,
-    };
-    const catId = category?._id;
-
-    console.log(updatedCategory, catId);
+    formData.append('categoryName', e.target.categoriesName.value)
+    formData.append('parentCategory', e.target.parentCategory.value)
+    if (CategoryImage) {
+      formData.append('coverImage', CategoryImage)
+    }
     try {
-      const catId = category?._id;
-      const response = await fetchApi(
-        `/category/updateCategory/${catId}`,
-        "PUT",
-        updatedCategory
-      );
-      if (response) {
-        setLoading(false);
-        console.log("Category Updated Successfully");
-      } else {
-        setLoading(false);
-        console.log("Failed to update category");
-      }
+      const catId = category?.id;
+      const { data } = await FetchApi({ url: `/category/api/editCategory/${catId}`, method: 'put', body: formData, isToast: true, callback: () => { setLoading(false) } })
+      console.log(data)
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -105,12 +91,20 @@ export default function SingleCtgPage({ category }) {
   };
 
   const findCategoryById = (id) => {
-    return AllCategories?.find((category) => category._id === id);
+    return categories?.find((category) => category.id === id);
   };
-
+  const handleCategoryFileChange = async (event) => {
+    const file = event.target.files[0];
+    try {
+      console.log(file)
+      setCategoryImage(file);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
   return (
     <main className="">
-      {data.length === 0 ? (
+      {categories.length === 0 ? (
         <Skeleton />
       ) : (
         <div>
@@ -135,7 +129,7 @@ export default function SingleCtgPage({ category }) {
             </div>
           </div>
           <div className="flex justify-center items-center">
-            <div className="w-full relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
+            <div className="w-full relative flex flex-col justify-center items-center bg-white m-4 rounded-md">
               <form onSubmit={handleUpdateCategory} className="w-full">
                 <button
                   type="submit"
@@ -144,6 +138,79 @@ export default function SingleCtgPage({ category }) {
                   {loading ? "Updating..." : "Update"}
                 </button>
                 <div className="grid grid-cols-2 gap-3">
+                  <div className="flex flex-col w-full col-span-2">
+                    {CategoryImage ?
+                      <img
+                        src={URL.createObjectURL(CategoryImage)}
+                        alt="Uploaded"
+                        className=" max-h-[300px] object-contain rounded-md"
+                      />
+                      : ctgData.coverImage && showCoverImg && (
+                        <div className="flex flex-col items-center gap-2">
+                          <img
+                            src={(ImgUrl + ctgData.coverImage)}
+                            alt="Uploaded"
+                            className=" max-h-[300px] object-contain rounded-md"
+                          />
+                        </div>
+                      )
+
+                    }
+                    {
+                      (CategoryImage || (ctgData.coverImage && showCoverImg)) &&
+                      <div>
+                        <div className="px-4 py-2 rounded-md w-max bg-black mx-auto mt-2 text-white text-sm cursor-pointer" onClick={() => {
+                          setshowCoverImg(false)
+                          setCategoryImage(null)
+                        }}>
+                          Change Cover
+                        </div>
+                      </div>
+                    }
+
+                    {!CategoryImage && (!ctgData.coverImage || !showCoverImg) && (
+                      <div>
+                        <input
+                          type="file"
+                          id="featuredImageUpload"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleCategoryFileChange}
+                        />
+                        <label
+                          htmlFor="featuredImageUpload"
+                          className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
+                        >
+                          <svg
+                            width="21"
+                            height="20"
+                            viewBox="0 0 21 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
+                              stroke="black"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                            />
+                            <path
+                              d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
+                              stroke="black"
+                              strokeWidth="1.25"
+                            />
+                            <path
+                              d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
+                              stroke="black"
+                              strokeWidth="1.25"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </label>
+                      </div>
+                    )}
+                  </div>
                   <div className="flex flex-col space-y-1 w-full">
                     <label
                       htmlFor="categoriesName"
@@ -194,7 +261,7 @@ export default function SingleCtgPage({ category }) {
                       <path
                         d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
                         fill="#648299"
-                        fill-rule="nonzero"
+                        fillRule="nonzero"
                       />
                     </svg>
                     <select
@@ -213,15 +280,15 @@ export default function SingleCtgPage({ category }) {
                         <option value="">Select Parent Category</option>
                       )}
 
-                      {AllCategories?.map((category) => (
-                        <option value={category?._id} key={category._id}>
+                      {categories?.map((category) => (
+                        <option value={category?.id} key={category.id}>
                           {category?.categoryName}
                         </option>
                       ))}
                     </select>
                   </div>
                 </div>
-                <div className="flex flex-col space-y-1 w-full mt-5">
+                {/* <div className="flex flex-col space-y-1 w-full mt-5">
                   <label
                     htmlFor="note"
                     className="text-sm font-semibold text-gray-600"
@@ -237,11 +304,10 @@ export default function SingleCtgPage({ category }) {
                     defaultValue={category?.categoryDescription}
                     className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
                   />
-                </div>
-                <div className="p-5 border bg-white rounded-md shadow-md w-full md:w-4/6 my-5">
+                </div> */}
+                {/* <div className="p-5 border bg-white rounded-md shadow-md w-full md:w-4/6 my-5">
                   <h5 className="text-md font-bold">Categories SEO</h5>
                   <div className="mt-5">
-                    {/* preview */}
                     <div className="grid grid-cols-1 md:grid-cols-3">
                       <div className="p-3 border bg-white rounded-md shadow-md w-full mb-5 md:col-span-2">
                         <div>
@@ -278,7 +344,6 @@ export default function SingleCtgPage({ category }) {
                       <div></div>
                     </div>
 
-                    {/* SEO Title */}
                     <div className="flex flex-col space-y-1 w-full">
                       <label
                         htmlFor="seoTitle"
@@ -305,7 +370,6 @@ export default function SingleCtgPage({ category }) {
                         ></div>
                       </div>
                     </div>
-                    {/* SEO Description */}
                     <div className="flex flex-col space-y-1 w-full mt-5">
                       <label
                         htmlFor="seoDescription"
@@ -334,7 +398,7 @@ export default function SingleCtgPage({ category }) {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>

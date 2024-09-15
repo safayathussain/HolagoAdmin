@@ -1,13 +1,18 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import Modal from "@/components/global/modal/Modal";
 import Pagination from "@/components/global/pagination/Pagination";
-import { fetchApi } from "@/utils/FetchApi";
+import { FetchApi, fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/utils/functions";
+import { store } from "@/redux/store";
+import useClickOutside from "@/utils/useClickOutside";
+import ConfirmModal from "@/components/global/modal/ConfirmModal";
+import toast from "react-hot-toast";
 
-export default function CategoriesTable({ AllCategories }) {
+export default function CategoriesTable({ AllCategories, refetch }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -20,45 +25,43 @@ export default function CategoriesTable({ AllCategories }) {
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showAction, setShowAction] = useState(false);
-
+  const [CategoryImage, setCategoryImage] = useState(null)
+  const [deleteCatModal, setdeleteCatModal] = useState(false)
   const data = AllCategories || [];
 
   const router = useRouter();
-
+  const { auth } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
 
-    const user = localStorage.getItem("user");
-    const userId = user ? JSON.parse(user).userId : "";
+
+    const userId = auth ? auth.id : "";
     const categoryName = e.target.categoriesName.value;
-    const description = e.target.note.value;
     const parentCategoryId = e.target.parentCategoryId.value;
 
     setIsLoading(true);
     try {
-      const data = {
-        userId,
-        categoryName,
-        categoryDescription: description,
-        parentCategory: parentCategoryId,
-        fetaureImage: "getlost.jpg",
-        title: "",
-        metaDescription: "",
-      };
-      console.log(data);
-      const response = await fetchApi("/category/addCategory", "POST", data);
+      const formData = new FormData();
+      formData.append('userId', userId);
+      formData.append('categoryName', categoryName);
+      formData.append('parentCategory', parentCategoryId);
+      formData.append('coverImage', CategoryImage);
+      const response = await FetchApi({ url: "/category/api/addCategory", method: "post", body: formData, isToast: true });
 
-      setIsLoading(false);
+      // setIsLoading(false);
 
       if (response) {
         setMessage("Category added successfully!");
+        refetch(Math.random())
+        setShowMenu(false)
       } else {
         setError("Failed to add category. Please try again.");
       }
     } catch (err) {
       setIsLoading(false);
+      console.log(err)
       setError("An error occurred while adding the category.");
     }
   };
@@ -66,16 +69,8 @@ export default function CategoriesTable({ AllCategories }) {
   const handleDeleteCategory = async () => {
     try {
       for (const itemId of selectedItems) {
-        const response = await fetchApi(
-          `/category/deleteCategory/${itemId}`,
-          "DELETE"
-        );
-        if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          setData(newData);
-        } else {
-          console.log(`Failed to delete category with ID ${itemId}.`);
-        }
+        const { data } = await FetchApi({ url: `/category/api/delete-category/${itemId}` , method: 'delete'})
+        console.log(data)
       }
       setSelectedItems([]);
       console.log("Selected categories deleted successfully!");
@@ -83,12 +78,14 @@ export default function CategoriesTable({ AllCategories }) {
       console.log("An error occurred while deleting selected categories.", err);
     }
   };
-
+  // console.log(selectedItems)
   const handleUpdateCategory = async () => {
     try {
-      for (const itemId of selectedItems) {
-        router.push(`/dashboard/products/categories/${itemId}`);
-      }
+      selectedItems.forEach((itemId, index) => {
+        setTimeout(() => {
+          window.open(`/dashboard/products/categories/${itemId}`, '_blank');
+        }, index * 1500); // 500 ms delay between opening tabs
+      });
     } catch (error) {
       console.log(
         "An error occurred while updating selected categories.",
@@ -100,7 +97,7 @@ export default function CategoriesTable({ AllCategories }) {
   // Filtered data based on search query
   const filteredData = data.filter((item) =>
     Object.values(item).some((value) =>
-      value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
     )
   );
 
@@ -138,9 +135,8 @@ export default function CategoriesTable({ AllCategories }) {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data?.map((item) => item._id)]);
+    setSelectedItems(selectAll ? [] : [...AllCategories?.map((item) => item.id)]);
   };
-
   const handleSelectItem = (itemId) => {
     const selectedIndex = selectedItems.indexOf(itemId);
     if (selectedIndex === -1) {
@@ -152,6 +148,24 @@ export default function CategoriesTable({ AllCategories }) {
       ]);
     }
   };
+  const handleCategoryFileChange = async (event) => {
+    const file = event.target.files[0];
+    setIsLoading(true);
+
+    try {
+      // const uploadedImageUrl = await handleUpload(file);
+      setCategoryImage(file);
+      setIsLoading(false);
+      // console.log(uploadedImageUrl);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      setIsLoading(false);
+    }
+  };
+  const menuref = useRef();
+  useClickOutside(menuref, () => {
+    setShowMenu(false)
+  })
   return (
     <section className="w-full my-5">
       <div>
@@ -205,7 +219,10 @@ export default function CategoriesTable({ AllCategories }) {
                 <ul className="py-1" aria-labelledby="dropdown">
                   <li>
                     <button
-                      onClick={handleUpdateCategory}
+                      onClick={() => {
+                        selectedItems.length === 0 ? toast.error('0 Category selected') :
+                          handleUpdateCategory()
+                      }}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Update
@@ -213,7 +230,10 @@ export default function CategoriesTable({ AllCategories }) {
                   </li>
                   <li>
                     <button
-                      onClick={handleDeleteCategory}
+                      onClick={() => {
+                        selectedItems.length === 0 ? toast.error('0 Category selected') :
+                          setdeleteCatModal(true)
+                      }}
                       className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
                     >
                       Delete
@@ -284,9 +304,8 @@ export default function CategoriesTable({ AllCategories }) {
                       {currentData?.map((item) => (
                         <tr
                           key={item?.id}
-                          className={`${
-                            item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                          className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                            } hover:bg-gray-100 duration-700`}
                         >
                           <td scope="col" className="p-4">
                             <div className="flex items-center">
@@ -294,8 +313,8 @@ export default function CategoriesTable({ AllCategories }) {
                                 id={`checkbox_${item?._id}`}
                                 type="checkbox"
                                 className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                                checked={selectedItems.includes(item?._id)}
-                                onChange={() => handleSelectItem(item?._id)}
+                                checked={selectedItems.includes(item?.id)}
+                                onChange={() => handleSelectItem(item?.id)}
                               />
                               <label
                                 htmlFor={`checkbox_${item?._id}`}
@@ -307,7 +326,7 @@ export default function CategoriesTable({ AllCategories }) {
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 ">
                             <Link
-                              href={`/dashboard/products/categories/${item._id}`}
+                              href={`/dashboard/products/categories/${item.id}`}
                             >
                               {item.categoryName}
                             </Link>
@@ -337,15 +356,13 @@ export default function CategoriesTable({ AllCategories }) {
           </div>
         </div>
         {/* modal */}
-        <Modal closeModal={() => setShowMenu(false)}>
+        <Modal open={showMenu}>
           <div
+            ref={menuref}
             id="menu"
-            className={`w-full h-full bg-gray-900 bg-opacity-80 top-0 right-0 ${
-              showMenu ? "fixed" : "hidden"
-            } sticky-0`}
           >
-            <div className="2xl:container h-screen 2xl:mx-auto py-48 px-4 md:px-28 flex justify-center items-center">
-              <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white p-4 rounded-md">
+            <div className="flex justify-center items-center">
+              <div className="max-w-[565px] lg:min-w-[565px] md:w-auto relative flex flex-col justify-center items-center bg-white rounded-md">
                 <div className="flex justify-between items-center w-full">
                   <span className="text-3xl font-bold">Add Categories</span>
                   <button
@@ -379,6 +396,60 @@ export default function CategoriesTable({ AllCategories }) {
                 </div>
                 <form onSubmit={handleSubmit} className="w-full mt-10">
                   <div className="grid grid-cols-2 gap-3">
+                    <div className="col-span-2 ">
+                      <div className="flex flex-col w-full ">
+                        {CategoryImage && (
+                          <img
+                            src={URL.createObjectURL(CategoryImage)}
+                            alt="Uploaded"
+                            className=" max-h-[300px] object-contain rounded-md"
+                          />
+                        )}
+
+                        {!CategoryImage && (
+                          <div>
+                            <input
+                              type="file"
+                              id="featuredImageUpload"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={handleCategoryFileChange}
+                            />
+                            <label
+                              htmlFor="featuredImageUpload"
+                              className="z-20 flex flex-col-reverse items-center justify-center w-full h-[200px] cursor-pointer border py-20 bg-gray-200 rounded-md"
+                            >
+                              <svg
+                                width="21"
+                                height="20"
+                                viewBox="0 0 21 20"
+                                fill="none"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  d="M10.0925 2.4917C6.35684 2.4917 4.48901 2.4917 3.32849 3.65177C2.16797 4.81185 2.16797 6.67896 2.16797 10.4132C2.16797 14.1473 2.16797 16.0145 3.32849 17.1746C4.48901 18.3347 6.35684 18.3347 10.0925 18.3347C13.8281 18.3347 15.6959 18.3347 16.8565 17.1746C18.017 16.0145 18.017 14.1473 18.017 10.4132V9.99626"
+                                  stroke="black"
+                                  strokeWidth="1.25"
+                                  strokeLinecap="round"
+                                />
+                                <path
+                                  d="M4.66602 17.4913C8.17433 13.5319 12.117 8.28093 17.9993 12.2192"
+                                  stroke="black"
+                                  strokeWidth="1.25"
+                                />
+                                <path
+                                  d="M15.4982 1.66504V8.33847M18.8362 4.98087L12.1602 4.99327"
+                                  stroke="black"
+                                  strokeWidth="1.25"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </label>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                     <div className="flex flex-col space-y-1 w-full">
                       <label
                         htmlFor="categoriesName"
@@ -427,7 +498,7 @@ export default function CategoriesTable({ AllCategories }) {
                         <path
                           d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
                           fill="#648299"
-                          fill-rule="nonzero"
+                          fillRule="nonzero"
                         />
                       </svg>
                       <select
@@ -435,31 +506,16 @@ export default function CategoriesTable({ AllCategories }) {
                         name="parentCategoryId"
                         className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
                       >
-                        <option value="0">Select Parent Category</option>
+                        <option value="">Select Parent Category</option>
                         {AllCategories?.map((item) => (
-                          <option key={item._id} value={item._id}>
+                          <option key={item.id} value={item.id}>
                             {item.categoryName}
                           </option>
                         ))}
                       </select>
                     </div>
                   </div>
-                  <div className="flex flex-col space-y-1 w-full mt-5">
-                    <label
-                      htmlFor="note"
-                      className="text-sm font-semibold text-gray-600"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      id="note"
-                      name="note"
-                      cols={30}
-                      rows={3}
-                      optional
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
-                    />
-                  </div>
+
 
                   {error && (
                     <div className="text-red-500 text-sm mt-2">{error}</div>
@@ -479,6 +535,7 @@ export default function CategoriesTable({ AllCategories }) {
             </div>
           </div>
         </Modal>
+        <ConfirmModal open={deleteCatModal} setOpen={setdeleteCatModal} onConfirm={handleDeleteCategory} title={'Are you sure to delete selected categories?'} />
       </div>
     </section>
   );
