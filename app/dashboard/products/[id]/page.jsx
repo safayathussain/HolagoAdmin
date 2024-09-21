@@ -1,5 +1,5 @@
 "use client";
-import { fetchApi } from "@/utils/FetchApi";
+import { FetchApi, fetchApi } from "@/utils/FetchApi";
 import Product from "./Product";
 import { useEffect, useState } from "react";
 
@@ -22,8 +22,8 @@ export default function Page({ params }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchApi(`/product/getProductById/${id}`, "GET");
-        setData(data);
+        const {data} = await FetchApi({url: `/products/api/get-products/${id}`});
+        setData(data.data);
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
@@ -34,7 +34,7 @@ export default function Page({ params }) {
 
   return (
     <main className="">
-      <Product product={data?.data} />
+      <Product product={data} />
     </main>
   );
 }

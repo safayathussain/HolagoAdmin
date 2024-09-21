@@ -24,7 +24,7 @@ export default function Page() {
               <div>
                 <input type="file" id="file-upload" className="hidden " />
                 <label
-                  for="file-upload"
+                  htmlFor="file-upload"
                   className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
                 >
                   <svg

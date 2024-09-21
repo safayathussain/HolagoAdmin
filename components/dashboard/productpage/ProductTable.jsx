@@ -7,6 +7,7 @@ import Pagination from "@/components/global/pagination/Pagination";
 import { useRouter } from "next/navigation";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
+import { ImgUrl } from "@/constants/urls";
 
 export default function ProductTable({ AllProducts }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,7 +23,7 @@ export default function ProductTable({ AllProducts }) {
 
   const router = useRouter();
 
-  const titleData = ["All", "Published", "Draft"];
+  const titleData = ["All"];
   const data = AllProducts || [];
 
   const noPicture = "https://i.ibb.co/bJXhK7w/3256026-200.png";
@@ -94,7 +95,7 @@ export default function ProductTable({ AllProducts }) {
 
   const handleSelectAll = () => {
     setSelectAll(!selectAll);
-    setSelectedItems(selectAll ? [] : [...data.map((item) => item._id)]);
+    setSelectedItems(selectAll ? [] : [...data.map((item) => item.id)]);
   };
 
   const handleSelectItem = (itemId) => {
@@ -117,7 +118,7 @@ export default function ProductTable({ AllProducts }) {
           "DELETE"
         );
         if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
+          const newData = data.filter((item) => item.id !== itemId);
           setData(newData);
         } else {
           console.log(`Failed to delete category with ID ${itemId}.`);
@@ -290,7 +291,7 @@ export default function ProductTable({ AllProducts }) {
                           onClick={() => handleSort("inventory.sku")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          SKU &#x21d5;
+                          Weight &#x21d5;
                         </th>
                         <th
                           scope="col"
@@ -324,7 +325,7 @@ export default function ProductTable({ AllProducts }) {
                     <tbody className="bg-white text-black">
                       {currentData?.map((item) => (
                         <tr
-                          key={item._id}
+                          key={item.id}
                           className={`${
                             item.id % 2 !== 0 ? "" : "bg-gray-100"
                           } hover:bg-gray-100 duration-700`}
@@ -332,14 +333,14 @@ export default function ProductTable({ AllProducts }) {
                           <td scope="col" className="p-4">
                             <div className="flex items-center">
                               <input
-                                id={`checkbox_${item._id}`}
+                                id={`checkbox_${item.id}`}
                                 type="checkbox"
                                 className="w-4 h-4  bg-gray-100 rounded border-gray-300"
-                                checked={selectedItems.includes(item._id)}
-                                onChange={() => handleSelectItem(item._id)}
+                                checked={selectedItems.includes(item.id)}
+                                onChange={() => handleSelectItem(item.id)}
                               />
                               <label
-                                htmlFor={`checkbox_${item._id}`}
+                                htmlFor={`checkbox_${item.id}`}
                                 className="sr-only"
                               >
                                 checkbox
@@ -347,13 +348,13 @@ export default function ProductTable({ AllProducts }) {
                             </div>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                            <Link href={`/dashboard/products/${item._id}`}>
+                            <Link href={`/dashboard/products/${item.id}`}>
                               <div className="flex justify-start items-center">
                                 <Image
                                   className="w-7 h-7 rounded-md"
                                   width={30}
                                   height={30}
-                                  src={item?.productImage || noPicture}
+                                  src={ImgUrl + item?.featureImage || noPicture}
                                   alt={item?.productName}
                                 />
                                 <span className="ml-2">
@@ -363,11 +364,11 @@ export default function ProductTable({ AllProducts }) {
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {item?.inventory?.sku}
+                            {item?.weight} kg
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
-                            {item?.general?.salePrice}
+                            {item?.salePrice}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item?.date}

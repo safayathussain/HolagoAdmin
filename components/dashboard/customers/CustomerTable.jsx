@@ -1,8 +1,9 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import { FetchApi } from "@/utils/FetchApi";
 
 export default function CustomersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,48 +12,57 @@ export default function CustomersTable() {
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const data = [
-    {
-      id: 1,
-      userName: "shahriarhasan",
-      customerName: "Md Shahriar Hasan",
-      emailAddress: "bro404@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01913865741",
-    },
-    {
-      id: 2,
-      userName: "imranhasan",
-      customerName: "Md Imran Hasan",
-      emailAddress: "imran@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-    {
-      id: 3,
-      userName: "zahidhasar",
-      customerName: "Md Zahid Hasan",
-      emailAddress: "zahed@gmail.com",
-      city: "Chittagong",
-      phoneNumber: "01985621569",
-    },
-    {
-      id: 4,
-      userName: "mdshaiadul",
-      customerName: "Md Shaiadul Basar",
-      emailAddress: "mdshaiadul@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01745821569",
-    },
-    {
-      id: 5,
-      userName: "tasinbro",
-      customerName: "Md Tasin",
-      emailAddress: "tasin@gmail.com",
-      city: "Dhaka",
-      phoneNumber: "01913865741",
-    },
-  ];
+  const [data, setdata] = useState([])
+  useEffect(() => {
+    const loadData = async () => {
+      const { data: customersData } = await FetchApi({ url: 'auth/api/all-users/' })
+      setdata(customersData.data)
+    }
+    loadData()
+  }, [])
+
+  // const data = [
+  //   {
+  //     id: 1,
+  //     userName: "shahriarhasan",
+  //     customerName: "Md Shahriar Hasan",
+  //     emailAddress: "bro404@gmail.com",
+  //     city: "Dhaka",
+  //     phoneNumber: "01913865741",
+  //   },
+  //   {
+  //     id: 2,
+  //     userName: "imranhasan",
+  //     customerName: "Md Imran Hasan",
+  //     emailAddress: "imran@gmail.com",
+  //     city: "Dhaka",
+  //     phoneNumber: "01745821569",
+  //   },
+  //   {
+  //     id: 3,
+  //     userName: "zahidhasar",
+  //     customerName: "Md Zahid Hasan",
+  //     emailAddress: "zahed@gmail.com",
+  //     city: "Chittagong",
+  //     phoneNumber: "01985621569",
+  //   },
+  //   {
+  //     id: 4,
+  //     userName: "mdshaiadul",
+  //     customerName: "Md Shaiadul Basar",
+  //     emailAddress: "mdshaiadul@gmail.com",
+  //     city: "Dhaka",
+  //     phoneNumber: "01745821569",
+  //   },
+  //   {
+  //     id: 5,
+  //     userName: "tasinbro",
+  //     customerName: "Md Tasin",
+  //     emailAddress: "tasin@gmail.com",
+  //     city: "Dhaka",
+  //     phoneNumber: "01913865741",
+  //   },
+  // ];
 
   // Sorting function
   const sortedData = data.sort((a, b) => {
@@ -220,7 +230,7 @@ export default function CustomersTable() {
                             onChange={handleSelectAll}
                             checked={selectAll}
                           />
-                          <label for="checkbox-all" className="sr-only">
+                          <label htmlFor="checkbox-all" className="sr-only">
                             checkbox
                           </label>
                         </div>
@@ -232,27 +242,7 @@ export default function CustomersTable() {
                       >
                         User Name &#x21d5;
                       </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("customerName")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        Customer Name &#x21d5;
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("emailAddress")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        Email Address &#x21d5;
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("city")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        City &#x21d5;
-                      </th>
+                     
                       <th
                         scope="col"
                         onClick={() => handleSort("phoneNumber")}
@@ -266,9 +256,8 @@ export default function CustomersTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${
-                          item.id % 2 !== 0 ? "" : "bg-gray-100"
-                        } hover:bg-gray-100 duration-700`}
+                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
+                          } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -290,30 +279,13 @@ export default function CustomersTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <Link href={`/dashboard/customers/${item.id}`}>
                             <span className="underline underline-offset-2">
-                              {item.userName}
+                              {item.username}
                             </span>
                           </Link>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <Link href={`/dashboard/customers/${item.id}`}>
-                            <div className="flex justify-start items-center">
-                              <img
-                                className="w-7 h-7 rounded-md"
-                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
-                                alt=""
-                              />
-                              <span className="ml-2">{item.customerName}</span>
-                            </div>
-                          </Link>
-                        </td>
-                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.emailAddress}
-                        </td>
+                        
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.city}
-                        </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.phoneNumber}
+                          {item.phone_number}
                         </td>
                       </tr>
                     ))}

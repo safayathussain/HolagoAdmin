@@ -4,7 +4,7 @@ import "quill/dist/quill.snow.css";
 
 const QuillEditor = dynamic(() => import("react-quill"), { ssr: false });
 
-export default function AddProductShortDesRichText({ preValue }) {
+export default function AddProductShortDesRichText({ preValue, setShortDescription }) {
   const [content, setContent] = useState("");
 
   const quillModules = {
@@ -37,8 +37,7 @@ export default function AddProductShortDesRichText({ preValue }) {
   ];
 
   const handleEditorChange = (newContent) => {
-    setContent(newContent);
-    localStorage.setItem("ShortDescription", newContent);
+    setShortDescription(newContent);
   };
 
 

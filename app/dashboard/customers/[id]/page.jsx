@@ -50,7 +50,7 @@ export default function Page() {
               </label>
               <input
                 type="date"
-                id="productName"
+                name="saleStart"
                 defaultValue={new Date().toISOString().split("T")[0]}
                 className="border border-gray-300 rounded-md p-2 focus:outline-none "
               />
@@ -65,6 +65,7 @@ export default function Page() {
               <input
                 type="date"
                 id="saleendDate"
+                name="saleEnd"
                 defaultValue={new Date().toISOString().split("T")[0]}
                 className="border border-gray-300 rounded-md p-2 focus:outline-none "
               />
@@ -280,7 +281,7 @@ export default function Page() {
               <div>
                 <input type="file" id="file-upload" className="hidden " />
                 <label
-                  for="file-upload"
+                  htmlFor="file-upload"
                   className="z-20 flex flex-col-reverse items-center justify-center w-[145px] h-[145px] cursor-pointer border py-2 bg-gray-200 rounded-md"
                 >
                   <svg

@@ -8,6 +8,7 @@ const PhoneInput = ({ label, id, name, type = 'text', className, placeholder, ro
     React.useEffect(() => {
         // Combine country code and phone number and notify the parent component
         onChange(`${countryCode}${phoneNumber}`);
+        // onChange(`${countryCode}${phoneNumber}`);
     }, [countryCode, phoneNumber, onChange]);
 
     return (

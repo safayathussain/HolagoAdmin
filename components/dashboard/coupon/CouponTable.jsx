@@ -267,7 +267,7 @@ export default function CouponTable() {
                             onChange={handleSelectAll}
                             checked={selectAll}
                           />
-                          <label for="checkbox-all" className="sr-only">
+                          <label htmlFor="checkbox-all" className="sr-only">
                             checkbox
                           </label>
                         </div>

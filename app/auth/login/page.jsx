@@ -21,6 +21,7 @@ const page = () => {
             phone_number: phone
         }
         const { data } = await FetchApi({ url: 'auth/api/tokenPair/', method: 'post', body: payload, isToast: true })
+        toast(data.otp || '')
         if (data.code === 200) {
             setStep(1)
         }

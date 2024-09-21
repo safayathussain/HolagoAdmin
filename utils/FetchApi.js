@@ -11,7 +11,7 @@ export const FetchApi = async ({
     const instance = axios.create({
         baseURL: process.env.NEXT_PUBLIC_BASE_API,
         headers: {
-            'Authorization': `Bearer ${store.getState().auth?.user.access}`,
+            'Authorization': `${store.getState().auth?.user.access ? 'Bearer': ''} ${store.getState().auth?.user.access||''}`,
         }
     });
 

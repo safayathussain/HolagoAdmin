@@ -11,6 +11,7 @@ import { store } from "@/redux/store";
 import useClickOutside from "@/utils/useClickOutside";
 import ConfirmModal from "@/components/global/modal/ConfirmModal";
 import toast from "react-hot-toast";
+import TableTopArea from "@/components/global/table/TableTopArea";
 
 export default function CategoriesTable({ AllCategories, refetch }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,12 +25,12 @@ export default function CategoriesTable({ AllCategories, refetch }) {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [showAction, setShowAction] = useState(false);
   const [CategoryImage, setCategoryImage] = useState(null)
   const [deleteCatModal, setdeleteCatModal] = useState(false)
+  const [query, setquery] = useState('categoryName')
   const data = AllCategories || [];
+  const addCatFormRef = useRef()
 
-  const router = useRouter();
   const { auth } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,6 +57,8 @@ export default function CategoriesTable({ AllCategories, refetch }) {
         setMessage("Category added successfully!");
         refetch(Math.random())
         setShowMenu(false)
+        addCatFormRef.current.reset()
+        setIsLoading(false);
       } else {
         setError("Failed to add category. Please try again.");
       }
@@ -68,12 +71,12 @@ export default function CategoriesTable({ AllCategories, refetch }) {
 
   const handleDeleteCategory = async () => {
     try {
-      for (const itemId of selectedItems) {
-        const { data } = await FetchApi({ url: `/category/api/delete-category/${itemId}` , method: 'delete'})
-        console.log(data)
-      }
+      const { data } = await FetchApi({ url: `/category/api/delete_categories/`, method: 'post', body: { category_ids: selectedItems }, isToast: true })
       setSelectedItems([]);
-      console.log("Selected categories deleted successfully!");
+      if (data.status === 200) {
+        setdeleteCatModal(false)
+        refetch(Math.random())
+      }
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);
     }
@@ -96,9 +99,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
 
   // Filtered data based on search query
   const filteredData = data.filter((item) =>
-    Object.values(item).some((value) =>
-      value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    item?.[query]?.toString().toLowerCase().includes(searchQuery.toLowerCase()) === true
   );
 
   // Sorting function
@@ -166,95 +167,33 @@ export default function CategoriesTable({ AllCategories, refetch }) {
   useClickOutside(menuref, () => {
     setShowMenu(false)
   })
+  const filters = [
+    {
+      text: 'Category Name',
+      value: 'categoryName'
+    },
+    {
+      text: 'Category Slug',
+      value: 'slug'
+    },
+    {
+      text: 'Category Count',
+      value: 'id'
+    },
+  ]
   return (
     <section className="w-full my-5">
       <div>
-        <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
-          <div className="flex justify-between md:justify-start items-center w-full">
-            <h5 className="text-lg md:text-2xl font-bold">All Categories</h5>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-            <div className="relative flex items-center md:min-w-max w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
-              <div className="grid place-items-center h-full w-12 text-gray-300">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-
-              <input
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
-                type="text"
-                id="search"
-                placeholder="Search something.."
-              />
-            </div>
-            <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-                <button
-                  onClick={() => setShowAction(!showAction)}
-                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-                >
-                  Action <FaCaretDown className="ml-3" />
-                </button>
-              </div>
-              <div
-                onMouseLeave={() => setShowAction(false)}
-                className={`
-              ${showAction ? "block" : "hidden"}
-              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-                id="dropdown"
-              >
-                <ul className="py-1" aria-labelledby="dropdown">
-                  <li>
-                    <button
-                      onClick={() => {
-                        selectedItems.length === 0 ? toast.error('0 Category selected') :
-                          handleUpdateCategory()
-                      }}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Update
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={() => {
-                        selectedItems.length === 0 ? toast.error('0 Category selected') :
-                          setdeleteCatModal(true)
-                      }}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
-              <button
-                onClick={() => setShowMenu(true)}
-                className="flex justify-center items-center px-2 py-1"
-              >
-                <span className="text-xl font-semibold mr-1">+</span>{" "}
-                <span className="text-nowrap">Add Categories</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
+        <TableTopArea
+          title="All Categories"
+          addTitle="Add Category"
+          selectedItems={selectedItems}
+          setSearchQuery={setSearchQuery}
+          setQuery={setquery}
+          onUpdate={() => handleUpdateCategory()}
+          onDelete={() => setdeleteCatModal(true)}
+          filters={filters}
+          addFunc={() => setShowMenu(true)} />
         <div className="w-full mx-auto my-5">
           <div className="flex flex-col">
             <div className="overflow-x-auto shadow-md sm:rounded-lg">
@@ -273,7 +212,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
                               onChange={handleSelectAll}
                               checked={selectAll}
                             />
-                            <label for="checkbox-all" className="sr-only">
+                            <label htmlFor="checkbox-all" className="sr-only">
                               checkbox
                             </label>
                           </div>
@@ -394,7 +333,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
                     </svg>
                   </button>
                 </div>
-                <form onSubmit={handleSubmit} className="w-full mt-10">
+                <form ref={addCatFormRef} onSubmit={handleSubmit} className="w-full mt-10">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="col-span-2 ">
                       <div className="flex flex-col w-full ">
