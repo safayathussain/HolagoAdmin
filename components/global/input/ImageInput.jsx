@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ImageInput = ({onChange, id = Math.random().toString(), className="", ...etc}) => {
+const ImageInput = ({onChange, id = Math.random().toString(), className="", value = null, setValue = () => {}, ...etc}) => {
     return (
         <div>
             <div>
@@ -14,6 +14,7 @@ const ImageInput = ({onChange, id = Math.random().toString(), className="", ...e
                 />
                 <label
                     htmlFor={id}
+                    onDoubleClick={() => setValue(null)}
                     className={`z-20 flex flex-col-reverse items-center justify-center w-full h-[90px] cursor-pointer border  bg-gray-200 rounded-md ${className}`}
                 >
                     <svg

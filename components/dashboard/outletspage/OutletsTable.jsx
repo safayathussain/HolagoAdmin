@@ -197,11 +197,7 @@ export default function OutletsTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item.id}`}>
                             <div className="flex justify-start items-center">
-                              <img
-                                className="w-7 h-7 rounded-md"
-                                src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
-                                alt=""
-                              />
+                             
                               <span className="ml-2">{item.outletName}</span>
                             </div>
                           </Link>
@@ -210,11 +206,12 @@ export default function OutletsTable() {
                           {item.location}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.manager.phone_number}
+                          {item.manager_details?.phone_number}
                         </td>
 
                         <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                           <button
+                          onClick={() => rotuer.push(`/dashboard/outlets/${item.id}`)}
                             className={` px-2 py-1 rounded-md border border-black`}
                           >
                             Manage

@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
+import { FetchApi } from "@/utils/FetchApi";
 
 export default function UsersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,67 +15,77 @@ export default function UsersTable() {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showButton, setShowButton] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  
+  const [usersType, setUsersType] = useState("all");
+  const [data, setData] = useState([]);
+  const [allUsers, setallUsers] = useState([]);
+  useEffect(() => {
+    const loadData = async () => {
+      const { data } = await FetchApi({ url: "/auth/api/all-users/" });
+      setallUsers(data.data);
+    };
+    loadData();
+  }, []);
+  useEffect(() => {
+    if (usersType === "all") {
+      setData(allUsers);
+    } else {
+      setData(allUsers.filter((item) => item.role === usersType));
+    }
+  }, [usersType, allUsers]);
+  console.log(usersType);
+  // const data = [
+  //   {
+  //     id: 1,
+  //     userName: "samzaman",
+  //     name: "Samsuz Zaman",
+  //     role: "Manager",
+  //     email: "zaman400@gmail.com",
+  //     phone: "01700000000",
+  //   },
+  //   {
+  //     id: 2,
+  //     userName: "asadzaman",
+  //     name: "Asad Zaman",
+  //     role: "Employee",
+  //     email: "asad@gmail.com.bd",
+  //     phone: "01700074851",
+  //   },
+  //   {
+  //     id: 3,
+  //     userName: "sakib",
+  //     name: "Sakib Al Hasan",
+  //     role: "Administrator",
+  //     email: "sakib@bd.com",
+  //     phone: "01700694000",
+  //   },
+  //   {
+  //     id: 4,
+  //     userName: "tamim",
+  //     name: "Tamim Iqbal",
+  //     role: "Store Manager",
+  //     email: "tamim@gmail.com",
+  //     phone: "0178741259",
+  //   },
+  //   {
+  //     id: 5,
+  //     userName: "mashrafi",
+  //     name: "Mashrafi Bin Mortoza",
+  //     role: "Employee",
+  //     email: "nasgraf74@gmail.com",
+  //     phone: "01700074851",
+  //   },
+  //   {
+  //     id: 6,
+  //     userName: "mushfiq",
+  //     name: "Mushfiqur Rahim",
+  //     role: "Store Manager",
+  //     email: "mushi99@gmail.com",
+  //     phone: "0178741259",
+  //   },
+  // ];
 
-  const data = [
-    {
-      id: 1,
-      userName: "samzaman",
-      name: "Samsuz Zaman",
-      role: "Manager",
-      email: "zaman400@gmail.com",
-      phone: "01700000000",
-    },
-    {
-      id: 2,
-      userName: "asadzaman",
-      name: "Asad Zaman",
-      role: "Employee",
-      email: "asad@gmail.com.bd",
-      phone: "01700074851",
-    },
-    {
-      id: 3,
-      userName: "sakib",
-      name: "Sakib Al Hasan",
-      role: "Administrator",
-      email: "sakib@bd.com",
-      phone: "01700694000",
-    },
-    {
-      id: 4,
-      userName: "tamim",
-      name: "Tamim Iqbal",
-      role: "Store Manager",
-      email: "tamim@gmail.com",
-      phone: "0178741259",
-    },
-    {
-      id: 5,
-      userName: "mashrafi",
-      name: "Mashrafi Bin Mortoza",
-      role: "Employee",
-      email: "nasgraf74@gmail.com",
-      phone: "01700074851",
-    },
-    {
-      id: 6,
-      userName: "mushfiq",
-      name: "Mushfiqur Rahim",
-      role: "Store Manager",
-      email: "mushi99@gmail.com",
-      phone: "0178741259",
-    },
-  ];
-
-  const titleData = [
-    "All",
-    "Administrator(5)",
-    "Manager(21)",
-    "Store Manager(71)",
-    "Employee(80)",
-  ];
-
+  const titleData = ["All", "Admin", "Customer", "Outlet Manager"];
+  const usertypes = ["all", "admin", "customer", "outlet_manager"];
   const handleTitleButtonClick = (title) => {
     if (title === "All") {
       setSearchQuery("");
@@ -82,7 +93,6 @@ export default function UsersTable() {
       setSearchQuery(title);
     }
   };
-
 
   // Sorting function
   const sortedData = data.sort((a, b) => {
@@ -233,8 +243,8 @@ export default function UsersTable() {
         </div>
       </div>
 
-       {/* button component */}
-       <div
+      {/* button component */}
+      <div
         className={`
       ${showButton ? "flex" : "hidden"}
        flex-col md:flex-row gap-2 pb-5 border-b-2 justify-start items-center mt-5 `}
@@ -242,8 +252,12 @@ export default function UsersTable() {
         {titleData.map((title, index) => (
           <button
             key={index}
-            onClick={() => handleTitleButtonClick(title)}
-            className="bg-gray-100 text-gray-500 px-10 py-2 text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full md:w-auto"
+            onClick={() => setUsersType(usertypes[index])}
+            className={` ${
+              usersType !== usertypes[index]
+                ? " bg-gray-100 text-gray-500"
+                : "bg-black text-white"
+            } px-10 py-2 text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full md:w-auto`}
           >
             {title}
           </button>
@@ -279,7 +293,7 @@ export default function UsersTable() {
                         onClick={() => handleSort("userName")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
-                        Username &#x21d5;
+                        Id &#x21d5;
                       </th>
                       <th
                         scope="col"
@@ -345,18 +359,11 @@ export default function UsersTable() {
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap underline underline-offset-2 cursor-pointer">
                           <Link href={`/dashboard/usermanagement/${item.id}`}>
-                            {item.userName}{" "}
+                            {item.id}{" "}
                           </Link>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <div className="flex justify-start items-center">
-                            <img
-                              className="w-7 h-7 rounded-md"
-                              src="https://i.ibb.co/jVPhV6Q/diego-gonzalez-I8l-Durtf-Ao-unsplash.jpg"
-                              alt=""
-                            />
-                            <span className="ml-2">{item.name}</span>
-                          </div>
+                            {item.first_name + " " + item.last_name}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
                           {item.role}
@@ -365,7 +372,7 @@ export default function UsersTable() {
                           {item.email}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.phone}
+                          {item.phone_number}
                         </td>
 
                         <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">

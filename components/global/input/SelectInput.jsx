@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SelectInput = ({ label, id, name, type = 'text', className, placeholder, options, ...etc }) => {
+const SelectInput = ({ label, id, name, type = 'text', className, placeholder, options, value= '', ...etc }) => {
     return (
         <div>
             <div>
@@ -12,6 +12,7 @@ const SelectInput = ({ label, id, name, type = 'text', className, placeholder, o
                         type={type}
                         name={name}
                         spellCheck='false'
+                        value={value}
                         className={`block w-full  p-2 border-[1.5px] rounded-xl border-gray-300 focus:border-primary focus:border-[1.5px] focus:ring-0 ${className}`}
                         {...etc}
                     >

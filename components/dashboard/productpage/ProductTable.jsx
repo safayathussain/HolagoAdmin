@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import { ImgUrl } from "@/constants/urls";
+import TableTopArea from "@/components/global/table/TableTopArea";
 
 export default function ProductTable({ AllProducts }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,7 +21,7 @@ export default function ProductTable({ AllProducts }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showAction, setShowAction] = useState(false);
   const [filter, setFilter] = useState("All");
-
+  const [query, setQuery] = useState("productName");
   const router = useRouter();
 
   const titleData = ["All"];
@@ -32,22 +33,16 @@ export default function ProductTable({ AllProducts }) {
     setFilter(title);
     setSearchQuery("");
   };
-
+  console.log(searchQuery);
   // Filter data based on the filter state
-  const filteredData = data
-    .filter((item) => {
-      if (filter === "Draft") {
-        return item.productStatus === "Draft";
-      } else if (filter === "Published") {
-        return item.productStatus === "Published";
-      }
-      return true;
-    })
-    .filter((item) =>
-      Object.values(item).some((value) =>
-        value?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      )
-    );
+  const filteredData = data.filter((item) =>
+    query
+      ? item?.[query]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) === true
+      : data
+  );
 
   const sortData = (filteredData, sortBy, sortDirection) => {
     if (!sortBy) return filteredData;
@@ -130,12 +125,14 @@ export default function ProductTable({ AllProducts }) {
       console.log("An error occurred while deleting selected categories.", err);
     }
   };
-
+  console.log(selectedItems);
   const handleUpdateProduct = async () => {
     try {
-      for (const itemId of selectedItems) {
-        router.push(`/dashboard/products/${itemId}`);
-      }
+      selectedItems.map((itemId, index) => {
+        setTimeout(() => {
+          window.open(`/dashboard/products/${itemId}`, "_blank");
+        }, index * 2500); // 500 ms delay between opening tabs
+      });
     } catch (error) {
       console.log(
         "An error occurred while updating selected categories.",
@@ -143,97 +140,26 @@ export default function ProductTable({ AllProducts }) {
       );
     }
   };
-
+  const filters = [
+    {
+      text: "Product Name",
+      value: "productName",
+    },
+  ];
   return (
     <main>
-      <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
-        <div className="flex justify-between md:justify-start items-center  w-full">
-          <h5 className="text-lg md:text-2xl font-bold">All Products</h5>
-          <button
-            onClick={() => setShowButton(!showButton)}
-            className="text-sm md:text-lg text-gray-500 block md:hidden"
-          >
-            {showButton ? (
-              <CiMenuFries className="text-xl font-bold" />
-            ) : (
-              <CiMenuBurger className="text-xl font-bold" />
-            )}
-          </button>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-          {/* search bar */}
-          <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
-            <div className="grid place-items-center h-full w-12 text-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-
-            <input
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
-              type="text"
-              id="search"
-              placeholder="Search something.."
-            />
-          </div>
-          <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-            <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-              <button
-                onClick={() => setShowAction(!showAction)}
-                className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-              >
-                Action <FaCaretDown className="ml-3" />
-              </button>
-            </div>
-            <div
-              onMouseLeave={() => setShowAction(false)}
-              className={`
-              ${showAction ? "block" : "hidden"}
-              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-              id="dropdown"
-            >
-              <ul className="py-1" aria-labelledby="dropdown">
-                <li>
-                  <button
-                    onClick={handleUpdateProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Update
-                  </button>
-                </li>
-                <li>
-                  <button
-                    onClick={handleDeleteProduct}
-                    className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                  >
-                    Delete
-                  </button>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="ml-auto md:ml-0 text-white border border-black bg-black rounded-lg shadow-md">
-            <Link
-              href="/dashboard/addproduct"
-              className="flex justify-center items-center px-2 py-1"
-            >
-              <span className="text-xl font-semibold mr-1">+</span>{" "}
-              <span className="text-nowrap">Add Product</span>
-            </Link>
-          </div>
-        </div>
+      <div className="">
+        <TableTopArea
+          title="All Products"
+          addTitle="Add Product"
+          selectedItems={selectedItems}
+          setSearchQuery={setSearchQuery}
+          setQuery={setQuery}
+          onUpdate={() => handleUpdateProduct()}
+          onDelete={() => handleDeleteProduct()}
+          filters={filters}
+          addFunc={() => router.push("/dashboard/addproduct")}
+        />
       </div>
       {/* button component */}
       <div
@@ -354,7 +280,7 @@ export default function ProductTable({ AllProducts }) {
                                   className="w-7 h-7 rounded-md"
                                   width={30}
                                   height={30}
-                                  src={ImgUrl + item?.featureImage || noPicture}
+                                  src={item?.featureImage || noPicture}
                                   alt={item?.productName}
                                 />
                                 <span className="ml-2">
@@ -371,7 +297,14 @@ export default function ProductTable({ AllProducts }) {
                             {item?.salePrice}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                            {item?.date}
+                            {new Date(item?.created).toLocaleDateString(
+                              "en-GB",
+                              {
+                                day: "numeric",
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )}
                           </td>
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span

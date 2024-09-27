@@ -17,11 +17,10 @@ export default function OutletsDynamicHead({ id, title }) {
             </svg>
           </Link>
 
-          <h1 className="text-lg md:text-5xl font-semibold ml-5">BEL Banani</h1>
+          <h1 className="text-lg md:text-5xl font-semibold ml-5">{id}</h1>
         </div>
         <span className="text-sm md:text-lg">
-          Customer since jan 15, 2024 <span className="mx-5">.</span> Last
-          Order: Jan 24, 2024
+          Customer since jan 15, 2024 
         </span>
       </div>
     </>

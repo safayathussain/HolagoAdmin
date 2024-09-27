@@ -16,7 +16,7 @@ export default function CustomersTable() {
   useEffect(() => {
     const loadData = async () => {
       const { data: customersData } = await FetchApi({ url: 'auth/api/all-users/' })
-      setdata(customersData.data)
+      setdata(customersData.data.filter(item => item.role === 'customer'))
     }
     loadData()
   }, [])

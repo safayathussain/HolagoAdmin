@@ -1,6 +1,6 @@
 import React from 'react'
 
-const TextInput = ({ label, id, name, type = 'text', className, placeholder, rounded = 'xl', ...etc }) => {
+const ToogleInput = ({ label, id, name, type = 'text', className, placeholder, rounded = 'xl', ...etc }) => {
     return (
         <div>
             <div>
@@ -14,4 +14,4 @@ const TextInput = ({ label, id, name, type = 'text', className, placeholder, rou
     )
 }
 
-export default TextInput
+export default ToogleInput
