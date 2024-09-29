@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { fetchApi } from "@/utils/FetchApi";
 import logo from "@/public/image/logo.svg";
 import Image from "next/image";
 
@@ -42,14 +41,14 @@ const OtpVerify = () => {
       const intOtp = parseInt(otp);
       const data = { email, otp: intOtp };
       console.log(data);
-      const response = await fetchApi("/user/checkOTP", "POST", data);
+      // const response = await fetchApi("/user/checkOTP", "POST", data);
       setIsLoading(false);
 
-      if (response) {
-        router.push("/authentication/setpassword");
-      } else {
-        setError("Invalid OTP. Please try again.");
-      }
+      router.push("/authentication/setpassword");
+      // if (response) {
+      // } else {
+      //   setError("Invalid OTP. Please try again.");
+      // }
     } catch (err) {
       setIsLoading(false);
       setError("An error occurred while verifying the OTP.");
@@ -61,14 +60,14 @@ const OtpVerify = () => {
     setMessage("");
     setIsLoading(true);
     try {
-      const response = await fetchApi("/user/resetUser", "POST", { email });
-      if (response) {
-        setMessage("OTP resent successfully.");
-        setIsLoading(false);
-        setCountdown(120);
-      } else {
-        setError("something went wrong");
-      }
+      // const response = await fetchApi("/user/resetUser", "POST", { email });
+      // if (response) {
+      //   setMessage("OTP resent successfully.");
+      //   setIsLoading(false);
+      //   setCountdown(120);
+      // } else {
+      //   setError("something went wrong");
+      // }
     } catch (err) {
       setError("An error occurred while resending the OTP.");
       setIsLoading(false);

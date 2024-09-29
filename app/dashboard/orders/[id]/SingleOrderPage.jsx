@@ -1,6 +1,5 @@
 "use client";
 import DynamicHead from "@/components/dashboard/orderpage/dynamic/DynamicHead";
-import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import Loading from "../../loading";
@@ -33,9 +32,9 @@ export default function SingleOrderPage({ order }) {
     const orderStatus = formData.get("orderStatus");
     setIsLoading(true);
     try {
-      const data = await fetchApi(`/order/${order?._id}`, "PUT", {
-        orderStatus,
-      });
+      // const data = await fetchApi(`/order/${order?._id}`, "PUT", {
+      //   orderStatus,
+      // });
       setIsLoading(false);
       router.push("/dashboard/orders");
       console.log(data);
@@ -50,9 +49,9 @@ export default function SingleOrderPage({ order }) {
     const orderNote = formData.get("orderNote");
     setIsLoading(true);
     try {
-      const data = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
-        orderNote,
-      });
+      // const data = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
+      //   orderNote,
+      // });
       setIsLoading(false);
       router.push("/dashboard/orders");
       console.log(data);
@@ -66,10 +65,10 @@ export default function SingleOrderPage({ order }) {
       if (!customerId) return;
 
       try {
-        const res = await fetchApi(
-          `/order/customerHistory/${customerId}`,
-          "GET"
-        );
+        // const res = await fetchApi(
+        //   `/order/customerHistory/${customerId}`,
+        //   "GET"
+        // );
         const data = res?.orders;
         setCustomerHistory(data);
       } catch (error) {

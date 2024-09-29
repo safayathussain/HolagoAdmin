@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { FaCaretDown } from "react-icons/fa";
 import Modal from "@/components/global/modal/Modal";
 import Pagination from "@/components/global/pagination/Pagination";
-import { FetchApi, fetchApi } from "@/utils/FetchApi";
+import { FetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/utils/functions";
 import { store } from "@/redux/store";

@@ -7,7 +7,6 @@ import "jspdf-autotable";
 import Loading from "@/app/dashboard/loading";
 import Pagination from "@/components/global/pagination/Pagination";
 import { FaCaretDown } from "react-icons/fa";
-import { fetchApi } from "@/utils/FetchApi";
 import { useRouter } from "next/navigation";
 
 export default function OrderTable({ AllOrders }) {
@@ -109,16 +108,16 @@ export default function OrderTable({ AllOrders }) {
   const handleDeleteProduct = async () => {
     try {
       for (const itemId of selectedItems) {
-        const response = await fetchApi(
-          `/order/deleteOrder/${itemId}`,
-          "DELETE"
-        );
-        if (response.status === 200) {
-          const newData = data.filter((item) => item._id !== itemId);
-          setData(newData);
-        } else {
-          console.log(`Failed to delete category with ID ${itemId}.`);
-        }
+        // const response = await fetchApi(
+        //   `/order/deleteOrder/${itemId}`,
+        //   "DELETE"
+        // );
+        // if (response.status === 200) {
+        //   const newData = data.filter((item) => item._id !== itemId);
+        //   setData(newData);
+        // } else {
+        //   console.log(`Failed to delete category with ID ${itemId}.`);
+        // }
       }
       setSelectedItems([]);
       console.log("Selected categories deleted successfully!");

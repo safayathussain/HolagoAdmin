@@ -5,7 +5,6 @@ import { CiMenuBurger, CiMenuFries } from "react-icons/ci";
 import { FaCaretDown } from "react-icons/fa";
 import Pagination from "@/components/global/pagination/Pagination";
 import { useRouter } from "next/navigation";
-import { fetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import { ImgUrl } from "@/constants/urls";
 import TableTopArea from "@/components/global/table/TableTopArea";
@@ -107,18 +106,18 @@ export default function ProductTable({ AllProducts }) {
 
   const handleDeleteProduct = async () => {
     try {
-      for (const itemId of selectedItems) {
-        const response = await fetchApi(
-          `/product/deleteProduct/${itemId}`,
-          "DELETE"
-        );
-        if (response.status === 200) {
-          const newData = data.filter((item) => item.id !== itemId);
-          setData(newData);
-        } else {
-          console.log(`Failed to delete category with ID ${itemId}.`);
-        }
-      }
+      // for (const itemId of selectedItems) {
+      //   const response = await fetchApi(
+      //     `/product/deleteProduct/${itemId}`,
+      //     "DELETE"
+      //   );
+      //   if (response.status === 200) {
+      //     const newData = data.filter((item) => item.id !== itemId);
+      //     setData(newData);
+      //   } else {
+      //     console.log(`Failed to delete category with ID ${itemId}.`);
+      //   }
+      // }
       setSelectedItems([]);
       console.log("Selected categories deleted successfully!");
     } catch (err) {

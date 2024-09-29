@@ -31,8 +31,8 @@ const TableTopArea = ({
                                 Filter with
                             </option>
                             {
-                                filters.map(item =>
-                                    <option className="bg-[#F9FAFB]" value={item.value}>
+                                filters.map((item, i) =>
+                                    <option key={i} className="bg-[#F9FAFB]" value={item.value}>
                                         {item.text}
                                     </option>
 

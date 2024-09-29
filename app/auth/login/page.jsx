@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
-const page = () => {
+const Page = () => {
     const [phone, setPhone] = useState(null)
     const [step, setStep] = useState(0)
     const [otp, setOtp] = useState('')
@@ -92,4 +92,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

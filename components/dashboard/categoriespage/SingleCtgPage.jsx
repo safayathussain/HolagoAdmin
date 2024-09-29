@@ -2,7 +2,7 @@
 import PrimaryButton from "@/components/global/primaryButton/PrimaryButton";
 import Skeleton from "@/components/global/skeleton/Skeleton";
 import { ImgUrl } from "@/constants/urls";
-import { FetchApi, fetchApi } from "@/utils/FetchApi";
+import { FetchApi } from "@/utils/FetchApi";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";

@@ -6,7 +6,7 @@ import { RiCloseLargeFill   } from 'react-icons/ri'
 import Link from 'next/link'
 import { useAuth } from '@/utils/functions'
 import { useRouter } from 'next/navigation'
-const layout = ({ children }) => {
+const Layout = ({ children }) => {
     const router = useRouter()
     const { auth } = useAuth()
     useEffect(() => {
@@ -32,4 +32,4 @@ const layout = ({ children }) => {
     )
 }
 
-export default layout
+export default Layout

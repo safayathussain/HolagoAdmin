@@ -1,6 +1,5 @@
 "use client";
 
-import { fetchApi } from "@/utils/FetchApi";
 import { useEffect, useState } from "react";
 import SingleOrderPage from "./SingleOrderPage";
 import Skeleton from "@/components/global/skeleton/Skeleton";
@@ -13,8 +12,8 @@ export default function Page({ params }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchApi(`/order/getOrderById/${id}`, "GET");
-        setOrder(data?.order);
+        // const data = await fetchApi(`/order/getOrderById/${id}`, "GET");
+        // setOrder(data?.order);
       } catch (error) {
         console.error("Error fetching product data:", error);
       }
