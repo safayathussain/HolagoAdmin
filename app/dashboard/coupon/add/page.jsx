@@ -1,5 +1,5 @@
 import CouponDynamicHead from "@/components/dashboard/coupon/dynamic/CouponDynamicHead";
-import CouponOption from "./CouponOption";
+import CouponOption from "../[id]/CouponOption";
 
 export default function page() {
   return (
