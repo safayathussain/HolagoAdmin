@@ -21,7 +21,7 @@ const ImagePreview = ({
           <img
             src={
               typeof item === "string"
-                ?  item
+                ? ImgUrl+  item
                 : URL.createObjectURL(item)
             }
             alt="Uploaded"

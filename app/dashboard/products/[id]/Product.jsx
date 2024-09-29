@@ -208,7 +208,7 @@ export default function Product({ product: existingProduct }) {
 
     // formData.append(`productsGallery`, photoGalary);
     photoGalary.forEach((file, index) => {
-      typeof file.image !== "string" && formData.append(`images`, file);
+      typeof file.image !== "string" && formData.append(`images[]`, file);
     });
 
     formData.append("productDescription", description);

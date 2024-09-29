@@ -280,7 +280,7 @@ export default function ProductTable({ AllProducts }) {
                                   className="w-7 h-7 rounded-md"
                                   width={30}
                                   height={30}
-                                  src={item?.featureImage || noPicture}
+                                  src={ImgUrl + item?.featureImage || noPicture}
                                   alt={item?.productName}
                                 />
                                 <span className="ml-2">
