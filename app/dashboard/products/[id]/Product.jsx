@@ -257,8 +257,8 @@ export default function Product({ product: existingProduct }) {
             available: available,
             quantity: quantity,
             size: item.size,
+            product_id: Number(id),
           };
-          console.log(obj);
           const isExists = savedInventory.find((inv) => inv.size === item.size);
           if (isExists) {
             FetchApi({

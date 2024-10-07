@@ -59,3 +59,7 @@ export const logoutUser = () => {
   window.location = '/login'
 
 }
+export const isEmptyArrowFunction = (func) => {
+  console.log(func)
+  return func.toString() === '()=>{}';
+};

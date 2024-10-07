@@ -145,6 +145,7 @@ export default function ProductTable({ AllProducts }) {
       value: "productName",
     },
   ];
+  console.log(currentData);
   return (
     <main>
       <div className="">
@@ -308,20 +309,27 @@ export default function ProductTable({ AllProducts }) {
                           <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
                             <span
                               className={`${
-                                item?.inventory?.stockStatus === "In Stock"
+                                item?.inventory?.reduce(
+                                  (total, item) => total + item?.quantity,
+                                  0
+                                ) > 0
                                   ? "bg-green-100 text-green-400"
                                   : "bg-red-100 text-red-400"
                               } px-2 py-1 rounded-full`}
                             >
-                              {item?.inventory?.stockStatus}
+                              {item?.inventory?.reduce(
+                                (total, item) => total + item?.quantity,
+                                0
+                              ) > 0
+                                ? "In Stock"
+                                : "Out of Stock"}
                             </span>
                           </td>
-                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                            <button
-                              className={`px-2 py-1 rounded-md border border-black`}
-                            >
-                              {item?.inventory?.inventoryStatus}
-                            </button>
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                            {item?.inventory?.reduce(
+                              (total, item) => total + item?.quantity,
+                              0
+                            )} Pcs
                           </td>
                         </tr>
                       ))}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FetchApi } from "@/utils/FetchApi";
+import TableTopArea from "@/components/global/table/TableTopArea";
 
 export default function CustomersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -11,61 +12,28 @@ export default function CustomersTable() {
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [query, setQuery] = useState("name");
+
   const [selectedItems, setSelectedItems] = useState([]);
   const [data, setdata] = useState([])
   useEffect(() => {
     const loadData = async () => {
-      const { data: customersData } = await FetchApi({ url: 'auth/api/all-users/' })
-      setdata(customersData.data.filter(item => item.role === 'customer'))
+      const { data: customersData } = await FetchApi({ url: 'customer/api/get_all_customers/' })
+      setdata(customersData.data)
     }
     loadData()
   }, [])
-
-  // const data = [
-  //   {
-  //     id: 1,
-  //     userName: "shahriarhasan",
-  //     customerName: "Md Shahriar Hasan",
-  //     emailAddress: "bro404@gmail.com",
-  //     city: "Dhaka",
-  //     phoneNumber: "01913865741",
-  //   },
-  //   {
-  //     id: 2,
-  //     userName: "imranhasan",
-  //     customerName: "Md Imran Hasan",
-  //     emailAddress: "imran@gmail.com",
-  //     city: "Dhaka",
-  //     phoneNumber: "01745821569",
-  //   },
-  //   {
-  //     id: 3,
-  //     userName: "zahidhasar",
-  //     customerName: "Md Zahid Hasan",
-  //     emailAddress: "zahed@gmail.com",
-  //     city: "Chittagong",
-  //     phoneNumber: "01985621569",
-  //   },
-  //   {
-  //     id: 4,
-  //     userName: "mdshaiadul",
-  //     customerName: "Md Shaiadul Basar",
-  //     emailAddress: "mdshaiadul@gmail.com",
-  //     city: "Dhaka",
-  //     phoneNumber: "01745821569",
-  //   },
-  //   {
-  //     id: 5,
-  //     userName: "tasinbro",
-  //     customerName: "Md Tasin",
-  //     emailAddress: "tasin@gmail.com",
-  //     city: "Dhaka",
-  //     phoneNumber: "01913865741",
-  //   },
-  // ];
-
+  const filteredData = data.filter((item) =>
+    query
+      ? item?.[query]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) === true
+      : data
+  );
   // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);
@@ -133,84 +101,30 @@ export default function CustomersTable() {
 
     doc.save("dataTable.pdf");
   };
+  const filters = [
+    {
+      text: "Customer Name",
+      value: "name",
+    },
+    {
+      text: "Phone Number",
+      value: "phone_number",
+    },
+    {
+      text: "Email Address",
+      value: "email",
+    },
+  ];
   return (
     <section className="w-full my-5">
-      <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
-        <div className="flex justify-between md:justify-start items-center w-full">
-          <h5 className="text-lg md:text-2xl font-bold">All Customers</h5>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full md:col-span-2">
-          {/* search bar */}
-          <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
-            <div className="grid place-items-center h-full w-12 text-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-
-            <input
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
-              type="text"
-              id="search"
-              placeholder="Search something.."
-            />
-          </div>
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <button
-                onClick={exportPdf}
-                className="flex mx-auto py-2 text-nowrap px-3"
-              >
-                Export As &#x2193;
-              </button>
-            </div>
-            <div className="mx-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <select className="bg-[#F9FAFB] mx-3 py-2 outline-none ">
-                <option className="bg-[#F9FAFB]" value="30">
-                  Action
-                </option>
-                <option className="bg-[#F9FAFB]" value="15">
-                  Last 15 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="7">
-                  Last 07 Days
-                </option>
-                <option className="bg-[#F9FAFB]" value="1">
-                  Last 1 Days
-                </option>
-              </select>
-            </div>
-          </div>
-          <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md">
-            <select className="bg-[#F9FAFB] mx-3 py-2 outline-none">
-              <option className="bg-[#F9FAFB]" value="30">
-                Filter with
-              </option>
-              <option className="bg-[#F9FAFB]" value="15">
-                Outlets Name
-              </option>
-              <option className="bg-[#F9FAFB]" value="7">
-                Outlets City
-              </option>
-              <option className="bg-[#F9FAFB]" value="1">
-                Outlets Address
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <TableTopArea
+       title="All Customer"
+       selectedItems={selectedItems}
+       setSearchQuery={setSearchQuery}
+       setQuery={setQuery}
+       filters={filters}
+       addFunc={() => router.push("/dashboard/addproduct")}
+     />
       {/* table component*/}
       <div className="w-full mx-auto my-5">
         <div className="flex flex-col">
@@ -250,6 +164,20 @@ export default function CustomersTable() {
                       >
                         Phone Number &#x21d5;
                       </th>
+                      <th
+                        scope="col"
+                        onClick={() => handleSort("email")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                      >
+                        Email &#x21d5;
+                      </th>
+                      <th
+                        scope="col"
+                        onClick={() => handleSort("club_points")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                      >
+                        Club Points &#x21d5;
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="bg-white text-black">
@@ -286,6 +214,12 @@ export default function CustomersTable() {
                         
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item.phone_number}
+                        </td>
+                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          {item.email}
+                        </td>
+                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                          {item.club_points}
                         </td>
                       </tr>
                     ))}

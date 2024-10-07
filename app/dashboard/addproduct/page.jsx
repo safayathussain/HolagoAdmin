@@ -161,7 +161,7 @@ export default function AddProductPage() {
     formData.append("dimension_length", e.target.dimension_length.value);
     formData.append("dimension_width", e.target.dimension_width.value);
     formData.append("dimension_height", e.target.dimension_height.value);
-    formData.append("color", colorValueArray.map(item => item.trim()))
+    formData.append("color", colorValueArray)
 
     console.log("Product Data:", formData);
 
@@ -184,6 +184,7 @@ console.log(data)
             available,
             quantity,
             size: item.size,
+            product_id: data.product.id
           };
           FetchApi({
             url: `/products/api/addInventoryByProductId/${data.product.id}`,
