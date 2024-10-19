@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import React from 'react'
 
 const SeoDetails = ({
@@ -44,14 +45,16 @@ const SeoDetails = ({
                                     <div className="col-span-2">
                                         <span>{descriptionInputValue}</span>
                                     </div>
-                                    <img
+                                    {/* <Image
+                                    width={300}
+                                    height={300}
                                         src={
                                             imageUrl ||
                                             "https://i.ibb.co/bJXhK7w/3256026-200.png"
                                         }
                                         alt="Deep-Blue-300x300"
                                         className="w-full object-cover"
-                                    />
+                                    /> */}
                                 </div>
                             </div>
                         </div>

@@ -549,3 +549,33 @@ margin-right: -10px;
 .product-image-swiper > .swiper-pagination-bullets, .product-image-swiper > .swiper-pagination-bullets, .product-image-swiper > .swiper-pagination-horizontal {
   top: 0 !important;
 }
+/* 
+.rs-calendar-table-cell-selected .rs-calendar-table-cell-content{
+  background-color: #000000 !important;
+}
+.rs-btn-primary{
+  background-color: #000000 !important;
+}
+.rs-calendar-time-dropdown-cell.rs-calendar-time-dropdown-cell-active {
+  background-color: #000000 !important;
+} */
+:root {
+  --rs-primary-50: #000000 !important;
+  --rs-primary-100: #000000 !important;
+  --rs-primary-200: #000000 !important;
+  --rs-primary-300: #000000 !important;
+  --rs-primary-400: #000000 !important;
+  --rs-primary-500: #000000 !important;
+  --rs-primary-600: #000000 !important;
+  --rs-primary-700: #000000 !important;
+  --rs-primary-800: #000000 !important;
+  --rs-primary-900: #000000 !important;
+
+  --rs-color-red: #f44336;
+  --rs-color-orange: #fa8900;
+  --rs-color-yellow: #ffb300;
+  --rs-color-green: #4caf50;
+  --rs-color-cyan: #00bcd4;
+  --rs-color-blue: #2196f3;
+  --rs-color-violet: #673ab7;
+}

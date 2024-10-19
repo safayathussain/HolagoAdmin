@@ -4,6 +4,11 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import Loading from "../../loading";
 import { useRouter } from "next/navigation";
+import SelectInput from "@/components/global/input/SelectInput";
+import { FetchApi } from "@/utils/FetchApi";
+import Button from "@/components/global/primaryButton/Button";
+import { allOrderStatus } from "@/utils/data";
+import { ImgUrl } from "@/constants/urls";
 
 export default function SingleOrderPage({ order }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -28,15 +33,14 @@ export default function SingleOrderPage({ order }) {
 
   const handleUpdateOrderStatus = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const orderStatus = formData.get("orderStatus");
     setIsLoading(true);
     try {
-      // const data = await fetchApi(`/order/${order?._id}`, "PUT", {
-      //   orderStatus,
-      // });
+      const {data} = await FetchApi({ url: `order/api/update-status/`, method: 'put', isToast:true,  body: {
+        order_id: order?.order_id,
+        new_status: e.target.status.value
+      }});
       setIsLoading(false);
-      router.push("/dashboard/orders");
+      // router.push("/dashboard/orders");
       console.log(data);
     } catch (error) {
       console.error("Error updating order status:", error);
@@ -78,7 +82,9 @@ export default function SingleOrderPage({ order }) {
 
     fetchCustomerHistory();
   }, [customerId]);
+const handleAddressRender = (address) => {
 
+}
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -106,7 +112,7 @@ export default function SingleOrderPage({ order }) {
                   <input
                     type="text"
                     id="orderDate"
-                    value={formatDate(order?.updatedAt)}
+                    value={formatDate(order?.created_at)}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -121,7 +127,7 @@ export default function SingleOrderPage({ order }) {
                   <input
                     type="text"
                     id="customer"
-                    defaultValue={order?.firstName + " " + order?.lastName}
+                    defaultValue={order?.user?.name !== " " ? order?.user?.name : 'No name'}
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -160,7 +166,7 @@ export default function SingleOrderPage({ order }) {
                       type="email"
                       id="email"
                       readOnly
-                      value={order?.customer?.email}
+                      value={order?.user?.email}
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
                   </div>
@@ -175,7 +181,7 @@ export default function SingleOrderPage({ order }) {
                       type="text"
                       id="phone"
                       readOnly
-                      value={order?.phoneNumber}
+                      value={order?.user?.phone_number}
                       className="border border-gray-300 rounded-md p-2 focus:outline-none "
                     />
                   </div>
@@ -224,12 +230,18 @@ export default function SingleOrderPage({ order }) {
                       scope="col"
                       className="py-3 px-1 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                     >
+                      Color
+                    </th>
+                    <th
+                      scope="col"
+                      className="py-3 px-1 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                    >
                       Total
                     </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white text-black ">
-                  {order?.products?.map((product, i) => (
+                  {order?.order_items?.map((product, i) => (
                     <tr key={i} className="">
                       <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap">
                         <div className="flex justify-start items-center text-wrap">
@@ -237,25 +249,26 @@ export default function SingleOrderPage({ order }) {
                             width={100}
                             height={100}
                             className="w-10 h-10 rounded-xl"
-                            src={product?.productImage}
+                            src={ImgUrl+ product?.product?.images?.[0]?.image}
                             alt="product_images"
                           />
                           <div className="ml-2">
                             <span className="text-sm">
-                              {product?.productName}
+                              {product?.product?.productName}
                             </span>
-                            <p className="text-sm text-gray-500">
-                              SKU: {product?.sku}
-                            </p>
+                            
                           </div>
                         </div>
                       </td>
                       <td className="py-4 px-1 text-sm font-medium text-gray-500 whitespace-nowrap ">
                         {product?.quantity}
                       </td>
+                      <td className="py-4 px-1 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                        {product?.color}
+                      </td>
                       <td className="py-4 px-1 text-sm font-medium text-gray-900 whitespace-nowrap ">
                         <span className="text-md">৳</span>
-                        <span className="text-md">{product?.totalPrice}</span>
+                        <span className="text-md">{product?.price}</span>
                       </td>
                     </tr>
                   ))}
@@ -298,13 +311,13 @@ export default function SingleOrderPage({ order }) {
                   <div className="flex justify-between items-center border-b-2 pb-2 mb-2">
                     <span className="text-gray-600 text-sm">Delivery</span>
                     <span className="ml-24 text-md font-semibold">
-                      ৳{order?.deliveryCharge}
+                      ৳{order?.shipping_cost}
                     </span>
                   </div>
                   <div className="flex justify-between items-center border-b-2 pb-2 mb-2">
                     <span className="text-gray-600 text-sm">Vat</span>
                     <span className="ml-24 text-md font-semibold">
-                      ৳{order?.vatRate}
+                      ৳{order?.vat}
                     </span>
                   </div>
                   <div className="flex justify-between items-center border-b-2 pb-2">
@@ -312,7 +325,7 @@ export default function SingleOrderPage({ order }) {
                       Order total
                     </span>
                     <span className="ml-24 text-md font-semibold">
-                      ৳{order?.totalPrice}
+                      ৳{order?.grand_total}
                     </span>
                   </div>
                 </div>
@@ -326,50 +339,21 @@ export default function SingleOrderPage({ order }) {
               onSubmit={handleUpdateOrderStatus}
               className="p-5 border bg-white rounded-md shadow-md w-full"
             >
-              <h5 className="text-md font-bold mb-3">{order?.orderStatus}</h5>
-              <div className="mt-5">
-                <label
-                  htmlFor="orderStatus"
-                  className="text-sm font-semibold text-gray-600"
-                >
-                  Order Status
-                </label>{" "}
-                <br />
-                <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                  <svg
-                    className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 412 232"
-                  >
-                    <path
-                      d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                      fill="#648299"
-                      fillRule="nonzero"
-                    />
-                  </svg>
-                  <select
-                    name="orderStatus"
-                    className="text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none"
-                  >
-                    <option value="Received">Received</option>
-                    <option value="Dispatched">Dispatched</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="On-Hold">On-Hold</option>
-                    <option value="Cancelled">Cancelled</option>
-                    <option value="Spammed">Spammed</option>
-                  </select>
-                </div>
+              <h5 className=" font-bold mb-3">{order?.status}</h5>
+              <SelectInput
+                className={`!rounded-md`}
+                name={"status"}
+                label={"Order Status"}
+                options={allOrderStatus}
+                defaultValue={order?.status}
+              />
+              <div className="flex justify-center mt-3">
+              <Button className={'!mx-auto'} rounded="md">Change Status</Button>
+
               </div>
-              <button
-                type="submit"
-                className="text-white bg-black px-3 py-2 rounded-md w-full mt-5"
-              >
-                Change Status
-              </button>
             </form>
             {/* two */}
-            <div className="p-5 border bg-white rounded-md shadow-md w-full">
+            {/* <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Order Attribution</h5>
               <div className="grid grid-cols-2 justify-between items-center gap-y-5">
                 <div>
@@ -408,7 +392,7 @@ export default function SingleOrderPage({ order }) {
                   <span className="text-md text-black font-semibold">5</span>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* three */}
             <div className="p-5 border bg-white rounded-md shadow-md w-full">
               <h5 className="text-md font-bold mb-3">Customer History</h5>
@@ -439,7 +423,7 @@ export default function SingleOrderPage({ order }) {
               </div>
             </div>
             {/* four */}
-            <form
+            {/* <form
               onSubmit={handleUpdateOrderNote}
               className="p-5 border bg-white rounded-md shadow-md w-full"
             >
@@ -471,7 +455,7 @@ export default function SingleOrderPage({ order }) {
               >
                 Proceed
               </button>
-            </form>
+            </form> */}
           </div>
         </section>
       </div>

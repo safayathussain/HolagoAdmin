@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import CouponTab from "@/components/dashboard/coupon/dynamic/CouponTab";
 import { format } from "date-fns";
-import { DayPicker } from "react-day-picker";
-import "react-day-picker/dist/style.css";
-import CustomTimePicker from "./CustomTimePicker";
-
+import TextInput from "@/components/global/input/TextInput";
+import { CustomProvider, DatePicker } from "rsuite";
+import DateInput from "@/components/global/input/DateInput";
+import TimeInput from "@/components/global/input/TimeInput";
 export default function CouponOption() {
   const [selected, setSelected] = useState(0);
 
@@ -48,9 +48,8 @@ export default function CouponOption() {
     setBodyTextSelectedColor(event.target.value);
   };
 
-  const freeShippingText =
-    "Check this box if the coupon grants free shipping. A free shipping method must be enabled in your shipping zone and be set to require 'a valid free shipping coupon' (see the 'Free Shipping Requires' setting).";
-
+  const freeShippingText = "Check this box if the coupon grants free shipping.";
+  const [value, setValue] = useState("");
   const couponDataTabs = [
     {
       title: "General",
@@ -64,40 +63,15 @@ export default function CouponOption() {
           </div>
           <div className="my-10">
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
-              <h4 className="text-gray-600 text-sm ">Discount Type </h4>
-              <div className="">
-                <div>
-                  <div className="relative flex border border-gray-300 px-2 mt-1 rounded-md bg-white hover:border-gray-400">
-                    <svg
-                      className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 412 232"
-                    >
-                      <path
-                        d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-                        fill="#648299"
-                        fillRule="nonzero"
-                      />
-                    </svg>
-                    <select className=" text-gray-600 h-10 pl-5 pr-10 w-full focus:outline-none appearance-none">
-                      <option>Fixed Product Discount</option>
-                      <option>Percentage Discount</option>
-                    </select>
-                  </div>
-                </div>
+              <h4 className="text-gray-600 text-sm ">Coupon Code</h4>
+              <div className="col-span-2">
+                <TextInput />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-center my-5">
               <h4 className="text-gray-600 text-sm ">Coupon Amount</h4>
-              <div className="">
-                <div className="flex justify-start items-center gap-2">
-                  <input
-                    type="number"
-                    id="sku"
-                    defaultValue={10}
-                    className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
-                  />
-                </div>
+              <div className="col-span-2">
+                <TextInput />
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 justify-between items-start my-5">
@@ -113,20 +87,10 @@ export default function CouponOption() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 justify-start items-start my-5">
               <h4 className="text-gray-600 text-sm ">Coupon Expiry Date</h4>
-              <div className="md:col-span-2">
-                <div className="grid grid-cols-1 md:grid-cols-2 justify-start items-center gap-2">
-                  <div className="border border-gray-300 shadow-lg rounded-md p-2">
-                    <DayPicker
-                      mode="single"
-                      selected={selected}
-                      onSelect={setSelected}
-                      disabled={disabledDays}
-                    />
-                  </div>
-                  <div className="border border-gray-300 shadow-lg rounded-md p-2">
-                    <CustomTimePicker />
-                  </div>
-                </div>
+              <div className="flex gap-2">
+
+              <DateInput />
+              <TimeInput/>
               </div>
             </div>
           </div>

@@ -18,11 +18,11 @@ export default function DynamicHead({ order }) {
         </Link>
 
         <h1 className="text-lg md:text-5xl font-semibold ml-5">
-          Order {order?.orderId}
+          Order #{order?.order_id}
         </h1>
       </div>
       <span className="text-sm md:text-lg">
-        Payment via {order?.paymentMethod}. Customer IP: {order?.customerIp || "00.000.000"}
+        Payment via {order?.payment_method ==='digitalPayment' ? 'Digital Payment' : 'Cash On Delivery'}
       </span>
     </div>
   );

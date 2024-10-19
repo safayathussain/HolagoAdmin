@@ -3,28 +3,29 @@ import PageHead from "@/components/global/pageHead/PageHead";
 
 import OrderTable from "@/components/dashboard/orderpage/OrderTable";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Skeleton from "@/components/global/skeleton/Skeleton";
+import { FetchApi } from "@/utils/FetchApi";
 
 export default function OrdersPage() {
-  const dispatch = useDispatch();
-  const orders = useSelector((state) => state?.orders);
-
+  const [orders, setOrders] = useState([]);
   useEffect(() => {
-    // dispatch(fetchOrders());
-  }, [dispatch]);
+    const loadData = async () => {
+      const { data } = await FetchApi({ url: "order/api/get_all_orders/" });
+      setOrders(data.data);
+    };
+    loadData();
+  }, []);
 
-  const AllOrders = orders?.orders?.orders;
-  const data = AllOrders || [];
 
   return (
     <main>
-      {data.length === 0 ? (
+      {orders.length === 0 ? (
         <Skeleton />
       ) : (
         <div>
           <PageHead pageHead="Orders" />
-          <OrderTable AllOrders={AllOrders} />
+          <OrderTable AllOrders={orders} />
         </div>
       )}
     </main>

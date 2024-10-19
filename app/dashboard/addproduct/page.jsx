@@ -1,21 +1,27 @@
 "use client";
 import AddProductDynamicHead from "@/components/dashboard/addproduct/DynamicHead";
-import AddProductRichText from "@/components/dashboard/addproduct/ProductRichText";
-import AddProductShortDesRichText from "@/components/dashboard/addproduct/ProductShortDesRichText";
 import { FetchApi } from "@/utils/FetchApi";
-import { useEffect, useRef, useState } from "react";
+import react, { useEffect, useRef, useState } from "react";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
 import GeneralDetails from "@/components/dashboard/addproduct/GeneralDetails";
 import InventoryDetails from "@/components/dashboard/addproduct/InventoryDetails";
 import ShippingDetails from "@/components/dashboard/addproduct/ShippingDetails";
 import ImageInput from "@/components/global/input/ImageInput";
-import SeoDetails from "@/components/dashboard/addproduct/SeoDetails";
 import ProductsDataBar from "@/components/dashboard/addproduct/ProductsDataBar";
 import Category from "@/components/dashboard/addproduct/Category";
 import ColorsArea from "@/components/dashboard/addproduct/ColorArea";
 import ImagePreview from "@/components/global/input/ImagePreview";
-
+import {} from "lodash";
+const SeoDetails = react.lazy(() =>
+  import("@/components/dashboard/addproduct/SeoDetails")
+);
+const AddProductRichText = react.lazy(() =>
+  import("@/components/dashboard/addproduct/ProductRichText")
+);
+const AddProductShortDesRichText = react.lazy(() =>
+  import("@/components/dashboard/addproduct/ProductShortDesRichText")
+);
 export default function AddProductPage() {
   const [colorValueArray, setColorValueArray] = useState([]);
   const [sizeValueArray, setSizeValueArray] = useState([]);
@@ -35,7 +41,8 @@ export default function AddProductPage() {
   const [description, setDescription] = useState("");
   const [shortDescription, setShortDescription] = useState("");
   const [categories, setcategories] = useState([]);
-  const [inventory, setInventory] = useState([])
+  const [inventory, setInventory] = useState([]);
+  console.log(sizeValueArray);
   useEffect(() => {
     const loadData = async () => {
       const { data } = await FetchApi({
@@ -122,10 +129,14 @@ export default function AddProductPage() {
     setColorValueArray(newcolorValueArray);
   };
   const handleRemoveSize = (indexToRemove) => {
-    const newcolorValueArray = sizeValueArray.filter(
+    const newsizeValueArray = sizeValueArray.filter(
       (_, index) => index !== indexToRemove
     );
-    setSizeValueArray(newcolorValueArray);
+    const newInventory = inventory.filter(
+      (_, index) => index !== indexToRemove
+    );
+    setInventory(newInventory);
+    setSizeValueArray(newsizeValueArray);
   };
   const handleAddProduct = async (e) => {
     e.preventDefault();
@@ -161,9 +172,7 @@ export default function AddProductPage() {
     formData.append("dimension_length", e.target.dimension_length.value);
     formData.append("dimension_width", e.target.dimension_width.value);
     formData.append("dimension_height", e.target.dimension_height.value);
-    formData.append("color", colorValueArray)
-
-    console.log("Product Data:", formData);
+    formData.append("color", colorValueArray);
 
     setIsLoading(true);
     try {
@@ -173,7 +182,6 @@ export default function AddProductPage() {
         isToast: true,
         body: formData,
       });
-console.log(data)
       if (data.product.id) {
         inventory.map((item, i) => {
           const quantity = e.target[`inventory_qty_${i}`].value;
@@ -184,7 +192,7 @@ console.log(data)
             available,
             quantity,
             size: item.size,
-            product_id: data.product.id
+            product_id: data.product.id,
           };
           FetchApi({
             url: `/products/api/addInventoryByProductId/${data.product.id}`,
@@ -193,7 +201,7 @@ console.log(data)
           });
         });
         setIsLoading(false);
-        // router.push("/dashboard/products");
+        router.push("/dashboard/products");
       } else {
         setIsLoading(false);
         console.log("Failed to add product:", data);

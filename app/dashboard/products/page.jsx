@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ProductsPage() {
-  const dispatch = useDispatch();
   const [products, setProducts] = useState([])
+  const [refetch, setrefetch] = useState(0)
   useEffect(() => {
     const loadData = async () => {
       const { data } = await FetchApi({ url: '/products/api/get-allProducts' })
@@ -16,10 +16,7 @@ export default function ProductsPage() {
 
     }
     loadData()
-  }, [dispatch]);
-
-  // console.log(product?.products?.products); 
-
+  }, [refetch]);
 
   return (
     <main>
@@ -28,7 +25,7 @@ export default function ProductsPage() {
       ) : (
         <div>
           <PageHead pageHead="Products" />
-          <ProductTable AllProducts={products} />
+          <ProductTable AllProducts={products} setrefetch={setrefetch}/>
         </div>
       )}
     </main>

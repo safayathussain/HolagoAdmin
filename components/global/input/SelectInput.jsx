@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SelectInput = ({ label, id, name, type = 'text', className, placeholder, options, value= '', ...etc }) => {
+const SelectInput = ({ label, id, name, type = 'text', className, placeholder, options, value, ...etc }) => {
     return (
         <div>
             <div>

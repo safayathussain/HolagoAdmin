@@ -12,6 +12,7 @@ import useClickOutside from "@/utils/useClickOutside";
 import ConfirmModal from "@/components/global/modal/ConfirmModal";
 import toast from "react-hot-toast";
 import TableTopArea from "@/components/global/table/TableTopArea";
+import Button from "@/components/global/primaryButton/Button";
 
 export default function CategoriesTable({ AllCategories, refetch }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -30,7 +31,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
   const [query, setquery] = useState('categoryName')
   const data = AllCategories || [];
   const addCatFormRef = useRef()
-
+const [selectedAddress, setselectedAddress] = useState(null)
   const { auth } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -71,8 +72,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
 
   const handleDeleteCategory = async () => {
     try {
-      const { data } = await FetchApi({ url: `/category/api/delete_categories/`, method: 'post', body: { category_ids: selectedItems }, isToast: true })
-      setSelectedItems([]);
+      const { data } = await FetchApi({ url: `/category/api/delete_categories/`, method: 'post', body: { category_ids: [selectedAddress] }, isToast: true })
       if (data.status === 200) {
         setdeleteCatModal(false)
         refetch(Math.random())
@@ -81,6 +81,7 @@ export default function CategoriesTable({ AllCategories, refetch }) {
       console.log("An error occurred while deleting selected categories.", err);
     }
   };
+  const router = useRouter()
   // console.log(selectedItems)
   const handleUpdateCategory = async () => {
     try {
@@ -190,8 +191,8 @@ export default function CategoriesTable({ AllCategories, refetch }) {
           selectedItems={selectedItems}
           setSearchQuery={setSearchQuery}
           setQuery={setquery}
-          onUpdate={() => handleUpdateCategory()}
-          onDelete={() => setdeleteCatModal(true)}
+          // onUpdate={() => handleUpdateCategory()}
+          // onDelete={() => setdeleteCatModal(true)}
           filters={filters}
           addFunc={() => setShowMenu(true)} />
         <div className="w-full mx-auto my-5">
@@ -237,9 +238,15 @@ export default function CategoriesTable({ AllCategories, refetch }) {
                         >
                           Count
                         </th>
+                        <th
+                          scope="col"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
-                    <tbody className="bg-white text-black">
+                    <tbody className="bg-white text-black ">
                       {currentData?.map((item) => (
                         <tr
                           key={item?.id}
@@ -275,6 +282,17 @@ export default function CategoriesTable({ AllCategories, refetch }) {
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             {item.productCount}
+                          </td>
+                          <td className="py-4 flex gap-1 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                            <Button size="sm" onClick={() => router.push(`/dashboard/products/categories/${item?.id}`)}>
+                              Edit
+                            </Button>
+                            <Button size="sm" className={'bg-error'} onClick={() => {
+                              setdeleteCatModal(true)
+                              setselectedAddress(item?.id)
+                            }}>
+                              Delete
+                            </Button>
                           </td>
                         </tr>
                       ))}

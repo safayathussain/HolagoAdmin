@@ -8,6 +8,8 @@ import Loading from "@/app/dashboard/loading";
 import Pagination from "@/components/global/pagination/Pagination";
 import { FaCaretDown } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import TableTopArea from "@/components/global/table/TableTopArea";
+import { getOrderStatusClasses, getOrderStatusStyle } from "@/utils/functions";
 
 export default function OrderTable({ AllOrders }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,22 +20,20 @@ export default function OrderTable({ AllOrders }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showButton, setShowButton] = useState(true);
-  const [showAction, setShowAction] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [query, setQuery] = useState("order_id");
+  const [orderType, setOrderType] = useState("all");
   const router = useRouter();
 
-  const data = AllOrders || [];
+  const data = orderType === 'all' ? AllOrders : AllOrders.filter(item => item.status === orderType);
 
   const titleData = [
     "All",
-    "Received",
-    "Confirmed",
-    "Dispatched",
+    "Pending",
+    "Processing",
+    "Shipped",
     "Delivered",
-    "On-Hold",
-    "Cancelled",
-    "Spammed",
+    "Canceled",
   ];
 
   const exportPdf = async () => {
@@ -51,15 +51,16 @@ export default function OrderTable({ AllOrders }) {
   };
 
   const handleTitleButtonClick = (title) => {
-    setSearchQuery(title === "All" ? "" : title);
+    setOrderType(title.toLowerCase())
   };
 
-  const filteredData = data?.filter((item) =>
-    Object.values(item).some(
-      (value) =>
-        value != null &&
-        value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const filteredData = data.filter((item) =>
+    query
+      ? item?.[query]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) === true
+      : data
   );
 
   const sortedData = filteredData?.sort((a, b) => {
@@ -67,8 +68,8 @@ export default function OrderTable({ AllOrders }) {
     const aValue = a[sortBy]?.toString().toLowerCase();
     const bValue = b[sortBy]?.toString().toLowerCase();
     return sortDirection === "asc"
-      ? aValue.localeCompare(bValue)
-      : bValue.localeCompare(aValue);
+      ? aValue?.localeCompare(bValue)
+      : bValue?.localeCompare(aValue);
   });
 
   const indexOfLastData = currentPage * dataPerPage;
@@ -153,99 +154,28 @@ export default function OrderTable({ AllOrders }) {
     };
     return date.toLocaleDateString(undefined, options);
   }
-
+  const filters = [
+    {
+      text: "Order Id",
+      value: "order_id",
+    },
+    {
+      text: "Order Status",
+      value: "status",
+    },
+  ];
   return (
     <main>
       {isLoading && <Loading />}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 justify-between items-center gap-y-3 mt-5 border-b-2 pb-5">
-        <div className="flex justify-between md:justify-start items-center  w-full">
-          <h5 className="text-lg md:text-2xl font-bold">All Orders</h5>
-          <button
-            onClick={() => setShowButton(!showButton)}
-            className="text-sm md:text-lg text-gray-500 block md:hidden"
-          >
-            {showButton ? (
-              <CiMenuFries className="text-xl font-bold" />
-            ) : (
-              <CiMenuBurger className="text-xl font-bold" />
-            )}
-          </button>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between items-center gap-3 ml-auto w-full">
-          {/* search bar */}
-          <div className="relative flex items-center w-full py-2 rounded-lg focus-within:shadow-lg bg-[#F9FAFB] shadow-md overflow-hidden">
-            <div className="grid place-items-center h-full w-12 text-gray-300">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-
-            <input
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2 "
-              type="text"
-              id="search"
-              placeholder="Search something.."
-            />
-          </div>
-
-          <div className="flex justify-between items-center gap-3 w-full">
-            <div className="ml-auto border border-[#F9FAFB] bg-[#F9FAFB] rounded-lg shadow-md w-full">
-              <button onClick={exportPdf} className="flex mx-auto py-2">
-                Export As &#x2193;
-              </button>
-            </div>
-            <div className="flex justify-between items-center gap-3 mr-auto md:mr-0 relative">
-              <div className=" bg-[#F9FAFB] rounded-lg shadow-md ">
-                <button
-                  onClick={() => setShowAction(!showAction)}
-                  className="bg-[#F9FAFB] mx-4 py-2 flex justify-center items-center"
-                >
-                  Action <FaCaretDown className="ml-3" />
-                </button>
-              </div>
-              <div
-                onMouseLeave={() => setShowAction(false)}
-                className={`
-              ${showAction ? "block" : "hidden"}
-              absolute top-11 bg-white text-base list-none divide-y divide-gray-100 rounded shadow-md w-full`}
-                id="dropdown"
-              >
-                <ul className="py-1" aria-labelledby="dropdown">
-                  <li>
-                    <button
-                      onClick={handleUpdateProduct}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Update
-                    </button>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleDeleteProduct}
-                      className="text-sm hover:bg-gray-100 text-gray-700 block px-4 py-2 w-full"
-                    >
-                      Delete
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TableTopArea
+        title="All Orders"
+        selectedItems={selectedItems}
+        setSearchQuery={setSearchQuery}
+        setQuery={setQuery}
+        // onUpdate={() => handleUpdateProduct()}
+        // onDelete={() => handleDeleteProduct()}
+        filters={filters}
+      />
       {/* button component */}
       <div
         className={`
@@ -256,7 +186,7 @@ export default function OrderTable({ AllOrders }) {
           <button
             key={index}
             onClick={() => handleTitleButtonClick(title)}
-            className="bg-gray-100 text-gray-500 px-3 py-2 text-md rounded-md hover:bg-black hover:text-white duration-700 shadow-md w-full"
+            className={` ${title.toLowerCase() !== orderType ? 'bg-gray-100' : 'bg-black text-white'} text-gray-500 px-3 py-2 text-md rounded-md hover:bg-black hover:text-white duration-300 shadow-md w-full`}
           >
             {title}
           </button>
@@ -290,39 +220,60 @@ export default function OrderTable({ AllOrders }) {
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("orderId")}
+                          onClick={() => handleSort("order_id")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("createdAt")}
+                          onClick={() => handleSort("created_at")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Order time &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("totalPrice")}
+                          onClick={() => handleSort("total_price")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Amount &#x21d5;
                         </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("payment_method")}
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Payment Method &#x21d5;
+                        </th>
 
                         <th
                           scope="col"
-                          onClick={() => handleSort("orderStatus")}
+                          onClick={() => handleSort("status")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Status &#x21d5;
                         </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("user.name")}
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Customer Name &#x21d5;
+                        </th>
+                        <th
+                          scope="col"
+                          onClick={() => handleSort("user.phone_number")}
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Customer Phone &#x21d5;
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
-                      {currentData?.map((item) => (
+                      {currentData?.map((item, i) => (
                         <tr
-                          key={item._id}
+                          key={i}
                           className={`${
                             item._id % 2 !== 0 ? "" : "bg-gray-100"
                           } hover:bg-gray-100 duration-700`}
@@ -345,40 +296,38 @@ export default function OrderTable({ AllOrders }) {
                             </div>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap underline underline-offset-2">
-                            <Link href={`/dashboard/orders/${item._id}`}>
-                              {item.orderId}
+                            <Link href={`/dashboard/orders/${item.order_id}`}>
+                              {item.order_id}
                             </Link>
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                            {formatDate(item.createdAt)}
+                            {formatDate(item.created_at)}
                           </td>
                           <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                             <span className="text-md">৳</span>
-                            {item.totalPrice}
+                            {item.total_price}
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
+                            {item.payment_method === "digitalPayment"
+                              ? "Digital Payment"
+                              : "Cash On Delivery"}
                           </td>
 
-                          <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
+                          <td
+                            className={`py-4 text-sm font-medium  whitespace-nowrap `}
+                          >
                             <span
-                              className={`${
-                                item.orderStatus === "Received"
-                                  ? "bg-yellow-200 text-yellow-800"
-                                  : item.orderStatus === "Confirmed"
-                                  ? "bg-blue-200 text-blue-800"
-                                  : item.orderStatus === "Delivered"
-                                  ? "bg-green-200 text-green-800"
-                                  : item.orderStatus === "On-Hold"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Spammed"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Cancelled"
-                                  ? "bg-red-200 text-red-800"
-                                  : item.orderStatus === "Dispatched"
-                                  ? "bg-orange-200 text-orange-600"
-                                  : ""
-                              } px-2 py-1 rounded-full`}
+                              className={` px-2 py-1 rounded-full`}
+                              style={getOrderStatusStyle(item?.status)}
                             >
-                              {item.orderStatus}
+                              {item?.status}
                             </span>
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                            {item?.user?.name}
+                          </td>
+                          <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                            {item?.user?.phone_number}
                           </td>
                         </tr>
                       ))}

@@ -27,12 +27,12 @@ const ColorsArea = ({colorInputValue, setcolorInputValue, colorValueArray, handl
                             className="bg-gray-100 rounded-full px-3 py-1 flex justify-between items-center "
                         >
                             <span className="text-md text-black">{color}</span>
-                            <button
+                            <div
                                 onClick={() => handleRemovecolor(index)}
-                                className="text-gray-300 font-semibold ml-2"
+                                className="text-gray-300 font-semibold ml-2 cursor-pointer"
                             >
                                 X
-                            </button>
+                            </div>
                         </div>
                     ))}
                 </div>

@@ -8,8 +8,11 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { ImgUrl } from "@/constants/urls";
 import TableTopArea from "@/components/global/table/TableTopArea";
+import Button from "@/components/global/primaryButton/Button";
+import { FetchApi } from "@/utils/FetchApi";
+import ConfirmModal from "@/components/global/modal/ConfirmModal";
 
-export default function ProductTable({ AllProducts }) {
+export default function ProductTable({ AllProducts, setrefetch }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(10);
   const [sortBy, setSortBy] = useState(null);
@@ -22,6 +25,8 @@ export default function ProductTable({ AllProducts }) {
   const [filter, setFilter] = useState("All");
   const [query, setQuery] = useState("productName");
   const router = useRouter();
+  const [deleteProductModal, setdeleteProductModal] = useState(false);
+  const [selectedProduct, setselectedProduct] = useState(null);
 
   const titleData = ["All"];
   const data = AllProducts || [];
@@ -106,37 +111,16 @@ export default function ProductTable({ AllProducts }) {
 
   const handleDeleteProduct = async () => {
     try {
-      // for (const itemId of selectedItems) {
-      //   const response = await fetchApi(
-      //     `/product/deleteProduct/${itemId}`,
-      //     "DELETE"
-      //   );
-      //   if (response.status === 200) {
-      //     const newData = data.filter((item) => item.id !== itemId);
-      //     setData(newData);
-      //   } else {
-      //     console.log(`Failed to delete category with ID ${itemId}.`);
-      //   }
-      // }
-      setSelectedItems([]);
-      console.log("Selected categories deleted successfully!");
+      await FetchApi({
+        url: `/products/api/deleteProduct/${selectedProduct}`,
+        method: "delete",
+        callback: () => {
+          setrefetch(Math.random());
+          setdeleteProductModal(false)
+        },
+      });
     } catch (err) {
       console.log("An error occurred while deleting selected categories.", err);
-    }
-  };
-  console.log(selectedItems);
-  const handleUpdateProduct = async () => {
-    try {
-      selectedItems.map((itemId, index) => {
-        setTimeout(() => {
-          window.open(`/dashboard/products/${itemId}`, "_blank");
-        }, index * 2500); // 500 ms delay between opening tabs
-      });
-    } catch (error) {
-      console.log(
-        "An error occurred while updating selected categories.",
-        error
-      );
     }
   };
   const filters = [
@@ -145,7 +129,6 @@ export default function ProductTable({ AllProducts }) {
       value: "productName",
     },
   ];
-  console.log(currentData);
   return (
     <main>
       <div className="">
@@ -155,8 +138,8 @@ export default function ProductTable({ AllProducts }) {
           selectedItems={selectedItems}
           setSearchQuery={setSearchQuery}
           setQuery={setQuery}
-          onUpdate={() => handleUpdateProduct()}
-          onDelete={() => handleDeleteProduct()}
+          // onUpdate={() => handleUpdateProduct()}
+          // onDelete={() => handleDeleteProduct()}
           filters={filters}
           addFunc={() => router.push("/dashboard/addproduct")}
         />
@@ -246,6 +229,12 @@ export default function ProductTable({ AllProducts }) {
                         >
                           Available
                         </th>
+                        <th
+                          scope="col"
+                          className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                        >
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white text-black">
@@ -329,7 +318,28 @@ export default function ProductTable({ AllProducts }) {
                             {item?.inventory?.reduce(
                               (total, item) => total + item?.quantity,
                               0
-                            )} Pcs
+                            )}{" "}
+                            Pcs
+                          </td>
+                          <td className="py-4 text-sm flex gap-2 font-medium text-gray-500 whitespace-nowrap ">
+                            <Button
+                              size="sm"
+                              onClick={() => {
+                                router.push(`/dashboard/products/${item?.id}`);
+                              }}
+                            >
+                              Edit
+                            </Button>
+                            <Button
+                              onClick={() => {
+                                setselectedProduct(item?.id);
+                                setdeleteProductModal(true);
+                              }}
+                              size="sm"
+                              className="bg-error"
+                            >
+                              Delete
+                            </Button>
                           </td>
                         </tr>
                       ))}
@@ -350,6 +360,12 @@ export default function ProductTable({ AllProducts }) {
           </div>
         </div>
       </section>
+      <ConfirmModal
+        open={deleteProductModal}
+        setOpen={setdeleteProductModal}
+        onConfirm={handleDeleteProduct}
+        title={"Are you sure to delete this product?"}
+      />
     </main>
   );
 }

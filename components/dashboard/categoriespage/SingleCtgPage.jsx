@@ -148,7 +148,7 @@ export default function SingleCtgPage({ category }) {
                       : ctgData.coverImage && showCoverImg && (
                         <div className="flex flex-col items-center gap-2">
                           <img
-                            src={ctgData.coverImage}
+                            src={ImgUrl+ ctgData.coverImage}
                             alt="Uploaded"
                             className=" max-h-[300px] object-contain rounded-md"
                           />

@@ -21,7 +21,7 @@ export default function Product({ product: existingProduct }) {
   console.log(existingProduct);
   const { id } = useParams();
   const [colorValueArray, setcolorValueArray] = useState(
-    existingProduct?.color || []
+    existingProduct?.color_list || []
   );
   const [sizeValueArray, setSizeValueArray] = useState([]);
   const [colorInputValue, setcolorInputValue] = useState("");
@@ -99,7 +99,8 @@ export default function Product({ product: existingProduct }) {
       setSizeChartImg(existingProduct?.sizeCharts);
       setDescription(existingProduct?.productDescription);
       setShortDescription(existingProduct?.productShortDescription);
-      setPhotoGalary(existingProduct.images);
+      setPhotoGalary(existingProduct?.images);
+      setcolorValueArray(existingProduct?.color_list)
       setIsLoading(false);
     }
   }, [existingProduct]);
@@ -197,7 +198,7 @@ export default function Product({ product: existingProduct }) {
       formData.append(key, value);
     }
   };
-  const handleAddProduct = async (e) => {
+  const handleEditProduct = async (e) => {
     e.preventDefault();
     formData.append("productName", e.target.productName.value);
     formData.append("category", categoryIds);
@@ -236,7 +237,7 @@ export default function Product({ product: existingProduct }) {
     formData.append("dimension_length", e.target.dimension_length.value);
     formData.append("dimension_width", e.target.dimension_width.value);
     formData.append("dimension_height", e.target.dimension_height.value);
-    formData.append("color", JSON.stringify(colorValueArray));
+    formData.append("color", colorValueArray);
 
     // setIsLoading(true);
     try {
@@ -318,7 +319,7 @@ export default function Product({ product: existingProduct }) {
     <main className="">
       {isLoading && <Loading />}
 
-      <form ref={formRef} onSubmit={handleAddProduct}>
+      <form ref={formRef} onSubmit={handleEditProduct}>
         <section className="mt-10 flex justify-between items-center">
           <AddProductDynamicHead title={initialValues.productName} />
           <button

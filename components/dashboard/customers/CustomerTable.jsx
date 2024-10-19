@@ -5,6 +5,7 @@ import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { FetchApi } from "@/utils/FetchApi";
 import TableTopArea from "@/components/global/table/TableTopArea";
+import Pagination from "@/components/global/pagination/Pagination";
 
 export default function CustomersTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -229,71 +230,14 @@ export default function CustomersTable() {
             </div>
           </div>
           {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
-
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Pagination
+              currentPage={currentPage}
+              dataPerPage={dataPerPage}
+              totalItems={sortedData.length}
+              paginate={paginate}
+              showingText={showingText}
+              data={sortedData}
+            />
         </div>
       </div>
     </section>

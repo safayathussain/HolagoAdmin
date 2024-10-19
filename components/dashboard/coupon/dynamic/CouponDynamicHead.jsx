@@ -1,6 +1,9 @@
+'use client'
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-export default function CouponDynamicHead({ id, title }) {
+export default function CouponDynamicHead() {
+  const {id} = useParams()
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex justify-start items-center">
@@ -16,12 +19,8 @@ export default function CouponDynamicHead({ id, title }) {
           </svg>
         </Link>
 
-        <h1 className="text-lg md:text-5xl font-semibold ml-5">EID2024</h1>
+        <h1 className="text-lg md:text-5xl font-semibold ml-5">{id || "Add new coupon"}</h1>
       </div>
-      <span className="text-sm md:text-lg">
-        Customer since jan 15, 2024 <span className="mx-5">.</span> Last Order:
-        Jan 24, 2024
-      </span>
     </div>
   );
 }
