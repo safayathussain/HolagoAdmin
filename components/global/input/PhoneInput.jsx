@@ -1,7 +1,7 @@
 import React from 'react';
 import phoneCountry from '@/public/data/phoneCountry.json';
 
-const PhoneInput = ({ label, id, name, type = 'text', className, placeholder, rounded = 'xl', onChange = () => {}, value, ...etc }) => {
+const PhoneInput = ({ label, id, name, type = 'text', className, placeholder, rounded = 'md', onChange = () => {}, value, ...etc }) => {
     const [countryCode, setCountryCode] = React.useState('+88'); // Default country code (for example, Bangladesh)
     const [phoneNumber, setPhoneNumber] = React.useState('');
 

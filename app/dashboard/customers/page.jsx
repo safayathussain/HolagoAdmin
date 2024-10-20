@@ -1,15 +1,17 @@
-
-import CustomersTable from "@/components/dashboard/customers/CustomerTable";
+import Loader from "@/components/global/loader/Loader";
 import PageHead from "@/components/global/pageHead/PageHead";
+import { lazy, Suspense } from "react";
+const CustomersTable = lazy(() =>
+  import("@/components/dashboard/customers/CustomerTable")
+);
 
 export default function CustomersPage() {
-  const titleData = ["All (1090)", "Published (576)", "Trash (576)"];
   return (
     <main>
       <PageHead pageHead="Customers" />
-      
-      
-      <CustomersTable />
+      <Suspense fallback={<Loader />}>
+        <CustomersTable />
+      </Suspense>
     </main>
   );
 }

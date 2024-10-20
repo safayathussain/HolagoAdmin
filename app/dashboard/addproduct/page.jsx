@@ -13,6 +13,7 @@ import Category from "@/components/dashboard/addproduct/Category";
 import ColorsArea from "@/components/dashboard/addproduct/ColorArea";
 import ImagePreview from "@/components/global/input/ImagePreview";
 import {} from "lodash";
+import TextInput from "@/components/global/input/TextInput";
 const SeoDetails = react.lazy(() =>
   import("@/components/dashboard/addproduct/SeoDetails")
 );
@@ -42,7 +43,6 @@ export default function AddProductPage() {
   const [shortDescription, setShortDescription] = useState("");
   const [categories, setcategories] = useState([]);
   const [inventory, setInventory] = useState([]);
-  console.log(sizeValueArray);
   useEffect(() => {
     const loadData = async () => {
       const { data } = await FetchApi({
@@ -140,6 +140,7 @@ export default function AddProductPage() {
   };
   const handleAddProduct = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("productName", e.target.productName.value);
     formData.append("category", categoryIds);
@@ -173,7 +174,6 @@ export default function AddProductPage() {
     formData.append("dimension_width", e.target.dimension_width.value);
     formData.append("dimension_height", e.target.dimension_height.value);
     formData.append("color", colorValueArray);
-
     setIsLoading(true);
     try {
       const { data } = await FetchApi({
@@ -266,8 +266,7 @@ export default function AddProductPage() {
                   >
                     Product Name
                   </label>
-                  <input
-                    type="text"
+                  <TextInput
                     id="productName"
                     name="productName"
                     required
@@ -354,7 +353,7 @@ export default function AddProductPage() {
                   ${activeTab == "general" ? "block" : "hidden"}
                   `}
                 >
-                  <GeneralDetails />
+                  <GeneralDetails/>
                 </div>
                 <div
                   className={`

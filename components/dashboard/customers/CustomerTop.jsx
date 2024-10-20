@@ -1,3 +1,4 @@
+import TextInput from "@/components/global/input/TextInput";
 
 
 export default function CustomerTop() {
@@ -41,7 +42,7 @@ export default function CustomerTop() {
               </svg>
             </div>
 
-            <input
+            <TextInput
               className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
               type="text"
               id="search"

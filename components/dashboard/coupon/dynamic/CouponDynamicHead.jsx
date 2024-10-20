@@ -7,7 +7,7 @@ export default function CouponDynamicHead() {
   return (
     <div className="flex flex-col space-y-2">
       <div className="flex justify-start items-center">
-        <Link href="/dashboard/orders">
+        <Link href="/dashboard/coupon">
           <svg
             width="19"
             height="32"

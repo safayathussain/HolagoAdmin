@@ -2,6 +2,7 @@
 import InventoryTable from "@/components/dashboard/outletspage/dynamic/InventoryTable";
 import OutletsDynamicHead from "@/components/dashboard/outletspage/dynamic/OutletsDynamicHead";
 import UserDynamicHead from "@/components/dashboard/userpage/dynamic/UserDynamicHead";
+import TextInput from "@/components/global/input/TextInput";
 
 export default function Page() {
   return (
@@ -64,7 +65,7 @@ export default function Page() {
                   >
                     User Name
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="userName"
                     defaultValue={"Md Shaiful Islam"}
@@ -139,7 +140,7 @@ export default function Page() {
                   >
                     First Name
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="firstName"
                     defaultValue={"Md Shaiful"}
@@ -153,7 +154,7 @@ export default function Page() {
                   >
                     Last Name
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="lastName"
                     defaultValue={"Islam"}
@@ -167,7 +168,7 @@ export default function Page() {
                   >
                     Phone Number
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="phoneNumber"
                     defaultValue={"0165428413"}
@@ -181,7 +182,7 @@ export default function Page() {
                   >
                     Email
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="email"
                     defaultValue={"managerbanani@best.com.bd"}
@@ -200,7 +201,7 @@ export default function Page() {
                   Set New Password
                 </h5>
                 <div className="flex">
-                  <input
+                  <TextInput
                     type="password"
                     id="firstName"
                     defaultValue={"Md Shaiful"}

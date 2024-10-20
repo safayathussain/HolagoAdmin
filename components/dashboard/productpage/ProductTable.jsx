@@ -114,6 +114,7 @@ export default function ProductTable({ AllProducts, setrefetch }) {
       await FetchApi({
         url: `/products/api/deleteProduct/${selectedProduct}`,
         method: "delete",
+        isToast:true,
         callback: () => {
           setrefetch(Math.random());
           setdeleteProductModal(false)
@@ -197,21 +198,21 @@ export default function ProductTable({ AllProducts, setrefetch }) {
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("inventory.sku")}
+                          onClick={() => handleSort("weight")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Weight &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("general.salePrice")}
+                          onClick={() => handleSort("salePrice")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           SalePrice &#x21d5;
                         </th>
                         <th
                           scope="col"
-                          onClick={() => handleSort("date")}
+                          onClick={() => handleSort("created")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
                           Published &#x21d5;
@@ -221,7 +222,7 @@ export default function ProductTable({ AllProducts, setrefetch }) {
                           onClick={() => handleSort("inventory.stockStatus")}
                           className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                         >
-                          Stock &#x21d5;
+                          Stock
                         </th>
                         <th
                           scope="col"

@@ -44,7 +44,7 @@ export const FetchApi = async ({
                             err.response?.data?.error ||
                             'Something went wrong'
                         );
-                    }
+                    },
                 }
             );
 

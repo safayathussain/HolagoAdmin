@@ -1,5 +1,6 @@
 "use client";
 import CustomerDynamicHead from "@/components/dashboard/customers/dynamic/CustomerDynamichead";
+import TextInput from "@/components/global/input/TextInput";
 import { useState } from "react";
 
 export default function Page() {
@@ -16,7 +17,7 @@ export default function Page() {
               >
                 Regular Price
               </label>
-              <input
+              <TextInput
                 type="text"
                 id="productName"
                 defaultValue={
@@ -32,7 +33,7 @@ export default function Page() {
               >
                 Sale Price
               </label>
-              <input
+              <TextInput
                 type="text"
                 id="productName"
                 defaultValue={

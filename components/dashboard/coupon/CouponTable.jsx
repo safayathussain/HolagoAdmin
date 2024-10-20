@@ -7,18 +7,24 @@ import PrimaryButton from "@/components/global/primaryButton/PrimaryButton";
 import TableTopArea from "@/components/global/table/TableTopArea";
 import Pagination from "@/components/global/pagination/Pagination";
 import { useRouter } from "next/navigation";
+import { formatInternationalDate } from "@/utils/functions";
+import Button from "@/components/global/primaryButton/Button";
+import ConfirmModal from "@/components/global/modal/ConfirmModal";
+import { FetchApi } from "@/utils/FetchApi";
 
-export default function CouponTable({ coupons }) {
+export default function CouponTable({ coupons, setrefetch }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5);
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [query, setQuery] = useState();
-  const [searchQuery, setSearchQuery] = useState();
+  const [query, setQuery] = useState("code");
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [deleteCouponModal, setdeleteCouponModal] = useState(false);
   const data = coupons;
-  const router = useRouter()
+  const router = useRouter();
   const filteredData = data.filter((item) =>
     query
       ? item?.[query]
@@ -96,12 +102,37 @@ export default function CouponTable({ coupons }) {
 
     doc.save("dataTable.pdf");
   };
+  const handleDeleteCoupon = async () => {
+    await FetchApi({
+      url: `/discount/api/delete_discount/${selectedCoupon}`,
+      method: "delete",
+      isToast: true,
+      callback: () => {
+        setrefetch(Math.random());
+        setdeleteCouponModal(false);
+      },
+    });
+  };
+  const filters = [
+    {
+      text: "Coupon Code",
+      value: "code",
+    },
+    {
+      text: "Coupon Amount",
+      value: "coupon_amount",
+    },
+    {
+      text: "Coupon Limit",
+      value: "usage_limit_per_coupon",
+    },
+  ];
   return (
     <section className="w-full my-5">
       <TableTopArea
-        addFunc={() => router.push('/dashboard/coupon/add')}
+        addFunc={() => router.push("/dashboard/addcoupon")}
         addTitle="Add Coupon"
-        filters={[]}
+        filters={filters}
         exportPdf={exportPdf}
         selectedItems={selectedItems}
         setQuery={setQuery}
@@ -139,30 +170,38 @@ export default function CouponTable({ coupons }) {
                       >
                         Code &#x21d5;
                       </th>
+
                       <th
                         scope="col"
-                        onClick={() => handleSort("couponType")}
-                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
-                      >
-                        Coupon Type &#x21d5;
-                      </th>
-                      <th
-                        scope="col"
-                        onClick={() => handleSort("amount")}
+                        onClick={() => handleSort("coupon_amount")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Amount &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("limit")}
+                        onClick={() => handleSort("minimum_spend")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                      >
+                        Minimum spend &#x21d5;
+                      </th>
+                      <th
+                        scope="col"
+                        onClick={() => handleSort("maximum_spend")}
+                        className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
+                      >
+                        Maximum spend &#x21d5;
+                      </th>
+                      <th
+                        scope="col"
+                        onClick={() => handleSort("usage_limit_per_coupon")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         limit &#x21d5;
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("expireDate")}
+                        onClick={() => handleSort("coupon_expiry_time")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         expire date &#x21d5;
@@ -201,29 +240,48 @@ export default function CouponTable({ coupons }) {
                           </div>
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <span className=" ">{item.code}</span>
+                          <Link
+                            href={`/dashboard/coupon/${item?.id}`}
+                            className=" "
+                          >
+                            {item.code}
+                          </Link>
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
-                          <div className="flex justify-start items-center">
-                            <span className="">{item.couponType}</span>
-                          </div>
+
+                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                          {item.coupon_amount} %
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
-                          {item.amount}
+                          {item.minimum_spend}
+                        </td>
+                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                          {item.maximum_spend}
+                        </td>
+                        <td className="py-4 text-sm font-medium text-gray-500 whitespace-nowrap ">
+                          {item.usage_limit_per_coupon}
                         </td>
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.limit}
+                          {formatInternationalDate(item.coupon_expiry_time)}
                         </td>
-                        <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
-                          {item.expireDate}
-                        </td>
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <Link
-                            href={`/dashboard/coupon/${item.id}`}
-                            className={` px-2 py-1 rounded-md border border-black`}
+                        <td className="py-4 text-sm flex gap-2 font-medium text-gray-500 whitespace-nowrap ">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              router.push(`/dashboard/coupon/${item?.id}`);
+                            }}
                           >
-                            Manage
-                          </Link>
+                            Edit
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setSelectedCoupon(item?.id);
+                              setdeleteCouponModal(true);
+                            }}
+                            size="sm"
+                            className="bg-error"
+                          >
+                            Delete
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -234,14 +292,20 @@ export default function CouponTable({ coupons }) {
           </div>
           {/* page footer */}
           <Pagination
-          currentPage={currentPage}
-          dataPerPage={dataPerPage}
-          paginate={paginate}
-          showingText={showingText}
-          totalItems={totalItems}
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            paginate={paginate}
+            showingText={showingText}
+            totalItems={totalItems}
           />
         </div>
       </div>
+      <ConfirmModal
+        open={deleteCouponModal}
+        setOpen={setdeleteCouponModal}
+        onConfirm={handleDeleteCoupon}
+        title={"Are you sure to delete this coupon?"}
+      />
     </section>
   );
 }

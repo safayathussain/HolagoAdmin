@@ -13,7 +13,7 @@ const SelectInput = ({ label, id, name, type = 'text', className, placeholder, o
                         name={name}
                         spellCheck='false'
                         value={value}
-                        className={`block w-full  p-2 border-[1.5px] rounded-xl border-gray-300 focus:border-primary focus:border-[1.5px] focus:ring-0 ${className}`}
+                        className={`block w-full  p-2 border-[1.5px] rounded-md border-gray-300 focus:border-primary focus:border-[1.5px] focus:ring-0 ${className}`}
                         {...etc}
                     >
                         {

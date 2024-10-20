@@ -82,4 +82,34 @@ export const getOrderStatusStyle = (status) => {
         : "#C0C0C0", // Light grey for unknown status
   };
 };
+export const formatDate = (dateString) => {
+  const date = new Date(dateString); // Parse the date string
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so +1
+  const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits
 
+  return `${year}-${month}-${day}`;
+};
+export const formatEndOfDay = (dateString) => {
+  const date = new Date(dateString); // Parse the date string
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based, so +1
+  const day = String(date.getDate()).padStart(2, '0'); // Ensure two digits
+
+  // Returning formatted string with end of day time "23:59:59"
+  return `${year}-${month}-${day}T23:59:59`;
+};
+export const formatInternationalDate = (isoDateString) => {
+  const date = new Date(isoDateString);
+
+  const options = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false, // use 24-hour format
+  };
+
+  return date.toLocaleString('en-US', options);
+};

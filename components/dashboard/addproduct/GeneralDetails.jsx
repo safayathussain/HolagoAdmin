@@ -1,3 +1,4 @@
+import TextInput from '@/components/global/input/TextInput'
 import React from 'react'
 
 const GeneralDetails = ({ formdata }) => {
@@ -11,7 +12,7 @@ const GeneralDetails = ({ formdata }) => {
           >
             Regular Price
           </label>
-          <input
+          <TextInput
             defaultValue={formdata?.regularPrice}
             type="number"
             id="regularPrice"
@@ -27,7 +28,7 @@ const GeneralDetails = ({ formdata }) => {
           >
             Sale Price
           </label>
-          <input
+          <TextInput
             defaultValue={formdata?.salePrice}
 
             type="number"

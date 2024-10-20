@@ -16,6 +16,7 @@ import Loading from "../../loading";
 import { ImgUrl } from "@/constants/urls";
 import ColorsArea from "@/components/dashboard/addproduct/ColorArea";
 import ImagePreview from "@/components/global/input/ImagePreview";
+import TextInput from "@/components/global/input/TextInput";
 
 export default function Product({ product: existingProduct }) {
   console.log(existingProduct);
@@ -200,6 +201,7 @@ export default function Product({ product: existingProduct }) {
   };
   const handleEditProduct = async (e) => {
     e.preventDefault();
+
     formData.append("productName", e.target.productName.value);
     formData.append("category", categoryIds);
     if (typeof featureImg !== "string") {
@@ -346,7 +348,7 @@ export default function Product({ product: existingProduct }) {
                   >
                     Product Name
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="productName"
                     name="productName"

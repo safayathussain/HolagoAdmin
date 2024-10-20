@@ -9,8 +9,9 @@ import { FetchApi } from "@/utils/FetchApi";
 import Button from "@/components/global/primaryButton/Button";
 import { allOrderStatus } from "@/utils/data";
 import { ImgUrl } from "@/constants/urls";
+import TextInput from "@/components/global/input/TextInput";
 
-export default function SingleOrderPage({ order }) {
+export default function SingleOrderPage({ order, addressStr }) {
   const [isLoading, setIsLoading] = useState(false);
   const [customerHistory, setCustomerHistory] = useState(null);
   const customerId = order?.customer?._id;
@@ -35,56 +36,23 @@ export default function SingleOrderPage({ order }) {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const {data} = await FetchApi({ url: `order/api/update-status/`, method: 'put', isToast:true,  body: {
-        order_id: order?.order_id,
-        new_status: e.target.status.value
-      }});
-      setIsLoading(false);
-      // router.push("/dashboard/orders");
-      console.log(data);
-    } catch (error) {
-      console.error("Error updating order status:", error);
-    }
-  };
-
-  const handleUpdateOrderNote = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const orderNote = formData.get("orderNote");
-    setIsLoading(true);
-    try {
-      // const data = await fetchApi(`/order/updateNote/${order?._id}`, "PUT", {
-      //   orderNote,
-      // });
+      const { data } = await FetchApi({
+        url: `order/api/update-status/`,
+        method: "put",
+        isToast: true,
+        body: {
+          order_id: order?.order_id,
+          new_status: e.target.status.value,
+        },
+      });
       setIsLoading(false);
       router.push("/dashboard/orders");
-      console.log(data);
     } catch (error) {
       console.error("Error updating order status:", error);
     }
   };
 
-  useEffect(() => {
-    const fetchCustomerHistory = async () => {
-      if (!customerId) return;
-
-      try {
-        // const res = await fetchApi(
-        //   `/order/customerHistory/${customerId}`,
-        //   "GET"
-        // );
-        const data = res?.orders;
-        setCustomerHistory(data);
-      } catch (error) {
-        console.error("Error fetching customer data:", error);
-      }
-    };
-
-    fetchCustomerHistory();
-  }, [customerId]);
-const handleAddressRender = (address) => {
-
-}
+ 
   return (
     <main className="">
       {isLoading && <Loading />}
@@ -109,7 +77,7 @@ const handleAddressRender = (address) => {
                   >
                     Order date
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="orderDate"
                     value={formatDate(order?.created_at)}
@@ -124,10 +92,12 @@ const handleAddressRender = (address) => {
                   >
                     Customer
                   </label>
-                  <input
+                  <TextInput
                     type="text"
                     id="customer"
-                    defaultValue={order?.user?.name !== " " ? order?.user?.name : 'No name'}
+                    defaultValue={
+                      order?.user?.name !== " " ? order?.user?.name : "No name"
+                    }
                     readOnly
                     className="border border-gray-300 rounded-md p-2 focus:outline-none "
                   />
@@ -162,7 +132,7 @@ const handleAddressRender = (address) => {
                     >
                       Email
                     </label>
-                    <input
+                    <TextInput
                       type="email"
                       id="email"
                       readOnly
@@ -177,7 +147,7 @@ const handleAddressRender = (address) => {
                     >
                       Phone
                     </label>
-                    <input
+                    <TextInput
                       type="text"
                       id="phone"
                       readOnly
@@ -199,9 +169,9 @@ const handleAddressRender = (address) => {
                       id="shippingDetails"
                       readOnly
                       cols={30}
-                      rows={3}
-                      value={order?.deliveryAddress}
-                      className="border border-gray-300 rounded-md p-2 focus:outline-none w-full"
+                      rows={5}
+                      value={addressStr}
+                      className="border border-gray-300 rounded-md text-sm p-2 focus:outline-none w-full"
                     />
                   </div>
                 </div>
@@ -249,14 +219,13 @@ const handleAddressRender = (address) => {
                             width={100}
                             height={100}
                             className="w-10 h-10 rounded-xl"
-                            src={ImgUrl+ product?.product?.images?.[0]?.image}
+                            src={ImgUrl + product?.product?.images?.[0]?.image}
                             alt="product_images"
                           />
                           <div className="ml-2">
                             <span className="text-sm">
                               {product?.product?.productName}
                             </span>
-                            
                           </div>
                         </div>
                       </td>
@@ -348,8 +317,9 @@ const handleAddressRender = (address) => {
                 defaultValue={order?.status}
               />
               <div className="flex justify-center mt-3">
-              <Button className={'!mx-auto'} rounded="md">Change Status</Button>
-
+                <Button className={"!mx-auto"} rounded="md">
+                  Change Status
+                </Button>
               </div>
             </form>
             {/* two */}

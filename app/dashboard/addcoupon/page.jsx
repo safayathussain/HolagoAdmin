@@ -1,5 +1,5 @@
 import CouponDynamicHead from "@/components/dashboard/coupon/dynamic/CouponDynamicHead";
-import CouponOption from "../[id]/CouponOption";
+import CouponOption from "../coupon/[id]/CouponOption";
 
 export default function page() {
   return (
@@ -7,7 +7,7 @@ export default function page() {
       <section className="mt-10 flex justify-between items-center">
         <CouponDynamicHead />
       </section>
-      <CouponOption />
+      <CouponOption type="add"/>
     </main>
   );
 }

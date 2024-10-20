@@ -2,11 +2,11 @@ import React from "react";
 import { CustomProvider, DatePicker } from "rsuite";
 import 'rsuite/dist/rsuite.min.css';
 
-const DateInput = () => {
+const DateInput = ({onChange, value='', ...etc}) => {
   return (
     <div>
       <CustomProvider>
-        <DatePicker />
+        <DatePicker onChange={onChange} value={value} {...etc} />
       </CustomProvider>
     </div>
   );

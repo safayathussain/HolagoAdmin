@@ -1,3 +1,4 @@
+import TextInput from '@/components/global/input/TextInput'
 import React from 'react'
 
 const ShippingDetails = ({formdata}) => {
@@ -5,7 +6,7 @@ const ShippingDetails = ({formdata}) => {
     <div>
          <div className="grid grid-cols-2 justify-between items-center">
                     <span>Weight (KG)</span>
-                    <input
+                    <TextInput
                       type="text"
                       id="weight"
                       name="weight"
@@ -17,7 +18,7 @@ const ShippingDetails = ({formdata}) => {
                   <div className="grid grid-cols-2 justify-between items-center py-5">
                     <span>Dimension</span>
                     <div className="grid grid-cols-3 gap-3">
-                      <input
+                      <TextInput
                       defaultValue={formdata?.dimension_length}
 
                         type="number"
@@ -27,7 +28,7 @@ const ShippingDetails = ({formdata}) => {
                         className="border border-gray-300 rounded-md p-2 focus:outline-none"
                         required
                       />
-                      <input
+                      <TextInput
                       defaultValue={formdata?.dimension_width}
 
                         type="number"
@@ -37,7 +38,7 @@ const ShippingDetails = ({formdata}) => {
                         className="border border-gray-300 rounded-md p-2 focus:outline-none"
                         required
                       />
-                      <input
+                      <TextInput
                       defaultValue={formdata?.dimension_height}
 
                         type="number"

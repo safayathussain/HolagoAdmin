@@ -7,29 +7,32 @@ import { FaCaretDown } from "react-icons/fa";
 import TableTopArea from "@/components/global/table/TableTopArea";
 import { useRouter } from "next/navigation";
 import { FetchApi } from "@/utils/FetchApi";
+import Pagination from "@/components/global/pagination/Pagination";
+import Button from "@/components/global/primaryButton/Button";
+import ConfirmModal from "@/components/global/modal/ConfirmModal";
 
-export default function OutletsTable() {
+export default function OutletsTable({ data, setrefetch }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [dataPerPage] = useState(5); // Change this value to adjust the number of rows per page
   const [sortBy, setSortBy] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
   const [selectAll, setSelectAll] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [query, setquery] = useState('outletName')
+  const [query, setquery] = useState("outletName");
   const [searchQuery, setSearchQuery] = useState("");
-  const [data, setdata] = useState([])
-  const rotuer = useRouter()
-  useEffect(() => {
-    const loadData = async () => {
-      const { data: outletsData } = await FetchApi({ url: '/outlet/api/get-all-outlets/' })
-      setdata(outletsData.data)
-      console.log(outletsData)
-    }
-    loadData()
-  }, [])
-
+  const [deleteOutletModal, setdeleteOutletModal] = useState(false)
+  const [selectedOutlet, setselectedOutlet] = useState(null)
+  const router = useRouter();
+  const filteredData = data.filter((item) =>
+    query
+      ? item?.[query]
+          ?.toString()
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase()) === true
+      : data
+  );
   // Sorting function
-  const sortedData = data.sort((a, b) => {
+  const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
       return a[sortBy].localeCompare(b[sortBy]);
@@ -99,21 +102,41 @@ export default function OutletsTable() {
   };
   const filters = [
     {
-      text: 'Outlet Name',
-      value: 'outletName'
+      text: "Outlet Name",
+      value: "outletName",
     },
     {
-      text: 'Outlet Location',
-      value: 'location'
+      text: "Outlet Location",
+      value: "location",
     },
     {
-      text: 'Outlet Phone',
-      value: 'manager.phone_number'
+      text: "Outlet Phone",
+      value: "manager.phone_number",
     },
-  ]
+  ];
+  const handleDeleteOutlet = async() => {
+    await FetchApi({
+      url: `/outlet/api/delete-outlet/${selectedOutlet}`,
+      method: "delete",
+      isToast:true,
+      callback: () => {
+        setrefetch(Math.random());
+        setdeleteOutletModal(false)
+      },
+    });
+  }
   return (
     <section className="w-full my-5">
-      <TableTopArea addTitle="Add Outlet" addFunc={() => rotuer.push('/dashboard/outlets/add')} selectedItems={selectedItems} title="All Outlets" exportPdf={exportPdf} filters={filters} setQuery={setquery} setSearchQuery={setSearchQuery} />
+      <TableTopArea
+        addTitle="Add Outlet"
+        addFunc={() => router.push("/dashboard/outlets/add")}
+        selectedItems={selectedItems}
+        title="All Outlets"
+        exportPdf={exportPdf}
+        filters={filters}
+        setQuery={setquery}
+        setSearchQuery={setSearchQuery}
+      />
 
       {/* table component*/}
       <div className="w-full mx-auto my-5">
@@ -148,15 +171,15 @@ export default function OutletsTable() {
                       </th>
                       <th
                         scope="col"
-                        onClick={() => handleSort("address")}
+                        onClick={() => handleSort("location")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Address &#x21d5;
                       </th>
-                      
+
                       <th
                         scope="col"
-                        onClick={() => handleSort("phoneNumber")}
+                        onClick={() => handleSort("phone_number")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Phone Number &#x21d5;
@@ -174,8 +197,9 @@ export default function OutletsTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -197,7 +221,6 @@ export default function OutletsTable() {
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap">
                           <Link href={`/dashboard/outlets/${item.id}`}>
                             <div className="flex justify-start items-center">
-                             
                               <span className="ml-2">{item.outletName}</span>
                             </div>
                           </Link>
@@ -209,13 +232,25 @@ export default function OutletsTable() {
                           {item.manager_details?.phone_number}
                         </td>
 
-                        <td className="py-4 text-[12px] font-medium  whitespace-nowrap ">
-                          <button
-                          onClick={() => rotuer.push(`/dashboard/outlets/${item.id}`)}
-                            className={` px-2 py-1 rounded-md border border-black`}
+                        <td className="py-4 text-sm flex gap-2 font-medium text-gray-500 whitespace-nowrap ">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              router.push(`/dashboard/outlets/${item?.id}`);
+                            }}
                           >
-                            Manage
-                          </button>
+                            Edit
+                          </Button>
+                          <Button
+                            onClick={() => {
+                              setselectedOutlet(item?.id);
+                              setdeleteOutletModal(true);
+                            }}
+                            size="sm"
+                            className="bg-error"
+                          >
+                            Delete
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -224,74 +259,21 @@ export default function OutletsTable() {
               </div>
             </div>
           </div>
-          {/* page footer */}
-          <div className="flex flex-col-reverse md:flex-row justify-between items-center gap-y-3 my-10">
-            {/* page number */}
-            <div className="flex justify-start items-center font-semibold">
-              {showingText}
-            </div>
-            {/* Pagination */}
-            <div className="flex justify-end items-center">
-              <nav aria-label="Pagination">
-                <ul className="inline-flex border rounded-sm shadow-md">
-                  <li>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      &#x2190;
-                    </button>
-                  </li>
-
-                  <li>
-                    <button
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage - 1}
-                    </button>
-                    <button
-                      className={`py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none`}
-                    >
-                      {currentPage}
-                    </button>
-                    <button
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                      onClick={() => paginate(currentPage + 1)}
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {currentPage + 1}
-                    </button>
-                    <span
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none cursor-not-allowed`}
-                    >
-                      ...
-                    </span>
-                    <button
-                      className={`py-2 px-4  bg-white text-gray-700 hover:bg-gray-100 focus:outline-none `}
-                    >
-                      {Math.ceil(data.length / dataPerPage)}
-                    </button>
-                    <button
-                      className="py-2 px-4 text-gray-700 bg-gray-100 focus:outline-none"
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={
-                        currentPage === Math.ceil(data.length / dataPerPage)
-                      }
-                    >
-                      &#x2192;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <Pagination
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            paginate={paginate}
+            showingText={showingText}
+            totalItems={totalItems}
+          />
         </div>
       </div>
+      <ConfirmModal
+        open={deleteOutletModal}
+        setOpen={setdeleteOutletModal}
+        onConfirm={handleDeleteOutlet}
+        title={"Are you sure to delete this outlet?"}
+      />
     </section>
   );
 }

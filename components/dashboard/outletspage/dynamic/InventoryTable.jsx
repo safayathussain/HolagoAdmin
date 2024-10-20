@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
+import TextInput from "@/components/global/input/TextInput";
 
 export default function InventoryTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -297,7 +298,7 @@ export default function InventoryTable() {
               </svg>
             </div>
 
-            <input
+            <TextInput
               onChange={(e) => setSearchQuery(e.target.value)}
               className="peer h-full w-full outline-none text-sm text-gray-500 bg-[#F9FAFB] pr-2"
               type="text"

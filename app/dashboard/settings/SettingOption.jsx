@@ -1,6 +1,7 @@
 "use client";
 import CouponTab from "@/components/dashboard/coupon/dynamic/CouponTab";
 import SettingTab from "@/components/dashboard/settings/SettingsTab";
+import TextInput from "@/components/global/input/TextInput";
 import PageHead from "@/components/global/pageHead/PageHead";
 import { useState } from "react";
 
@@ -119,7 +120,7 @@ export default function SettingOption() {
               <h4 className="text-gray-600 text-sm ">Additional tax classes</h4>
               <div className="">
                 <div className="flex justify-start items-center gap-2">
-                  <input
+                  <TextInput
                     type="text"
                     id="sku"
                     defaultValue={"Reduced rate Zero rate"}
@@ -184,7 +185,7 @@ export default function SettingOption() {
               <h4 className="text-gray-600 text-sm ">Price display suffix</h4>
               <div className="">
                 <div className="flex justify-start items-center gap-2">
-                  <input
+                  <TextInput
                     type="text"
                     id="sku"
                     defaultValue={"incl. VAT"}
@@ -329,7 +330,7 @@ export default function SettingOption() {
                 </h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="text"
                       id="sku"
                       defaultValue={"Reduced rate Zero rate"}
@@ -344,7 +345,7 @@ export default function SettingOption() {
                 </h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="text"
                       id="sku"
                       defaultValue={"Reduced rate Zero rate"}
@@ -754,7 +755,7 @@ export default function SettingOption() {
                   <h4 className="text-gray-600 text-sm "> “From” name</h4>
                   <div className="">
                     <div className="flex justify-start items-center gap-2">
-                      <input
+                      <TextInput
                         type="text"
                         id="sku"
                         defaultValue={"Best Electronics"}
@@ -767,7 +768,7 @@ export default function SettingOption() {
                   <h4 className="text-gray-600 text-sm ">“From” Address</h4>
                   <div className="">
                     <div className="flex justify-start items-center gap-2">
-                      <input
+                      <TextInput
                         type="text"
                         id="sku"
                         defaultValue={"Best Electronics"}
@@ -785,7 +786,7 @@ export default function SettingOption() {
                   <h4 className="text-gray-600 text-sm ">Header image</h4>
                   <div className="">
                     <div className="flex justify-start items-center gap-2">
-                      <input
+                      <TextInput
                         type="text"
                         id="sku"
                         defaultValue={"www.bestlectronics.com/email_logo.png"}
@@ -909,7 +910,7 @@ export default function SettingOption() {
                 <h4 className="text-gray-600 text-sm ">Recipients</h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="email"
                       id="recipients"
                       defaultValue={"example@example.com"}
@@ -922,7 +923,7 @@ export default function SettingOption() {
                 <h4 className="text-gray-600 text-sm ">Subject</h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="text"
                       id="sku"
                       defaultValue={"New Order: #{order_number}"}
@@ -935,7 +936,7 @@ export default function SettingOption() {
                 <h4 className="text-gray-600 text-sm ">Email Heading</h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="text"
                       id="emailHeading"
                       defaultValue={"New Order: #{order_number}"}
@@ -963,7 +964,7 @@ export default function SettingOption() {
                 <h4 className="text-gray-600 text-sm ">Email Type</h4>
                 <div className="">
                   <div className="flex justify-start items-center gap-2">
-                    <input
+                    <TextInput
                       type="text"
                       id="emailType"
                       disabled

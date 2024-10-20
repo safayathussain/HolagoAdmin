@@ -3,6 +3,7 @@ import PriceAndStock from "./PriceAndStock";
 import { ImgUrl } from "@/constants/urls";
 import ImagePreview from "@/components/global/input/ImagePreview";
 import ImageInput from "@/components/global/input/ImageInput";
+import TextInput from "@/components/global/input/TextInput";
 
 const InventoryDetails = ({
   inventory,
@@ -76,7 +77,7 @@ const InventoryDetails = ({
         </div>
         <div className=" flex gap-2 items-center justify-between mt-3">
           <p>Fabric</p>
-          <input
+          <TextInput
             type="text"
             id="productTag"
             name="fabric"

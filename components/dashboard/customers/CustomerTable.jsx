@@ -17,14 +17,16 @@ export default function CustomersTable() {
   const [query, setQuery] = useState("name");
 
   const [selectedItems, setSelectedItems] = useState([]);
-  const [data, setdata] = useState([])
+  const [data, setdata] = useState([]);
   useEffect(() => {
     const loadData = async () => {
-      const { data: customersData } = await FetchApi({ url: 'customer/api/get_all_customers/' })
-      setdata(customersData.data)
-    }
-    loadData()
-  }, [])
+      const { data: customersData } = await FetchApi({
+        url: "customer/api/get_all_customers/",
+      });
+      setdata(customersData.data);
+    };
+    loadData();
+  }, []);
   const filteredData = data.filter((item) =>
     query
       ? item?.[query]
@@ -37,9 +39,13 @@ export default function CustomersTable() {
   const sortedData = filteredData.sort((a, b) => {
     if (!sortBy) return 0;
     if (sortDirection === "asc") {
-      return a[sortBy].localeCompare(b[sortBy]);
+      if (a[sortBy]) {
+        return a[sortBy].localeCompare(b[sortBy]);
+      }
     } else {
-      return b[sortBy].localeCompare(a[sortBy]);
+      if (b[sortBy]) {
+        return b[sortBy].localeCompare(a[sortBy]);
+      }
     }
   });
 
@@ -119,13 +125,13 @@ export default function CustomersTable() {
   return (
     <section className="w-full my-5">
       <TableTopArea
-       title="All Customer"
-       selectedItems={selectedItems}
-       setSearchQuery={setSearchQuery}
-       setQuery={setQuery}
-       filters={filters}
-       addFunc={() => router.push("/dashboard/addproduct")}
-     />
+        title="All Customer"
+        selectedItems={selectedItems}
+        setSearchQuery={setSearchQuery}
+        setQuery={setQuery}
+        filters={filters}
+        addFunc={() => router.push("/dashboard/addproduct")}
+      />
       {/* table component*/}
       <div className="w-full mx-auto my-5">
         <div className="flex flex-col">
@@ -157,10 +163,10 @@ export default function CustomersTable() {
                       >
                         User Name &#x21d5;
                       </th>
-                     
+
                       <th
                         scope="col"
-                        onClick={() => handleSort("phoneNumber")}
+                        onClick={() => handleSort("phone_number")}
                         className="py-3 text-sm font-medium tracking-wider text-left text-gray-700 uppercase dark:text-gray-400 cursor-pointer"
                       >
                         Phone Number &#x21d5;
@@ -185,8 +191,9 @@ export default function CustomersTable() {
                     {currentData?.map((item) => (
                       <tr
                         key={item.id}
-                        className={`${item.id % 2 !== 0 ? "" : "bg-gray-100"
-                          } hover:bg-gray-100 duration-700`}
+                        className={`${
+                          item.id % 2 !== 0 ? "" : "bg-gray-100"
+                        } hover:bg-gray-100 duration-700`}
                       >
                         <td scope="col" className="p-4">
                           <div className="flex items-center">
@@ -212,7 +219,7 @@ export default function CustomersTable() {
                             </span>
                           </Link>
                         </td>
-                        
+
                         <td className="py-4 text-sm font-medium text-gray-900 whitespace-nowrap ">
                           {item.phone_number}
                         </td>
@@ -231,13 +238,13 @@ export default function CustomersTable() {
           </div>
           {/* page footer */}
           <Pagination
-              currentPage={currentPage}
-              dataPerPage={dataPerPage}
-              totalItems={sortedData.length}
-              paginate={paginate}
-              showingText={showingText}
-              data={sortedData}
-            />
+            currentPage={currentPage}
+            dataPerPage={dataPerPage}
+            totalItems={sortedData.length}
+            paginate={paginate}
+            showingText={showingText}
+            data={sortedData}
+          />
         </div>
       </div>
     </section>
