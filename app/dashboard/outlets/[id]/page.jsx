@@ -31,7 +31,7 @@ export default function Page() {
       }));
       setManagers(managers.filter((item) => item.role === "outlet_manager"));
       setManagersData(
-        users.data.filter((item) => item.role === "outlet_manager")
+        users.data?.filter((item) => item.role === "outlet_manager")
       );
     };
     loadData();

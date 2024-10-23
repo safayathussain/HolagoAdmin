@@ -39,7 +39,7 @@ export default function ProductTable({ AllProducts, setrefetch }) {
   };
   console.log(searchQuery);
   // Filter data based on the filter state
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     query
       ? item?.[query]
           ?.toString()
@@ -353,7 +353,7 @@ export default function ProductTable({ AllProducts, setrefetch }) {
             <Pagination
               currentPage={currentPage}
               dataPerPage={dataPerPage}
-              totalItems={sortedData.length}
+              totalItems={sortedData?.length}
               paginate={paginate}
               showingText={showingText}
               data={sortedData}

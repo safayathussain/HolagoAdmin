@@ -54,7 +54,7 @@ export default function OrderTable({ AllOrders }) {
     setOrderType(title.toLowerCase())
   };
 
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     query
       ? item?.[query]
           ?.toString()
@@ -114,7 +114,7 @@ export default function OrderTable({ AllOrders }) {
         //   "DELETE"
         // );
         // if (response.status === 200) {
-        //   const newData = data.filter((item) => item._id !== itemId);
+        //   const newData = data?.filter((item) => item._id !== itemId);
         //   setData(newData);
         // } else {
         //   console.log(`Failed to delete category with ID ${itemId}.`);
@@ -166,7 +166,6 @@ export default function OrderTable({ AllOrders }) {
   ];
   return (
     <main>
-      {isLoading && <Loading />}
       <TableTopArea
         title="All Orders"
         selectedItems={selectedItems}
@@ -425,7 +424,7 @@ export default function OrderTable({ AllOrders }) {
             <Pagination
               currentPage={currentPage}
               dataPerPage={dataPerPage}
-              totalItems={sortedData.length}
+              totalItems={sortedData?.length}
               paginate={paginate}
               showingText={showingText}
               data={sortedData}

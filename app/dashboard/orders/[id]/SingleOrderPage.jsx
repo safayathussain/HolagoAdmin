@@ -55,7 +55,6 @@ export default function SingleOrderPage({ order, addressStr }) {
  
   return (
     <main className="">
-      {isLoading && <Loading />}
       <div>
         <section className="mt-10 flex justify-between items-center">
           <DynamicHead order={order} />

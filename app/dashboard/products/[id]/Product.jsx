@@ -319,8 +319,6 @@ export default function Product({ product: existingProduct }) {
   }, [formRef.current?.querySelectorAll("input[required]")]);
   return (
     <main className="">
-      {isLoading && <Loading />}
-
       <form ref={formRef} onSubmit={handleEditProduct}>
         <section className="mt-10 flex justify-between items-center">
           <AddProductDynamicHead title={initialValues.productName} />

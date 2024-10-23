@@ -25,7 +25,7 @@ export default function CouponTable({ coupons, setrefetch }) {
   const [deleteCouponModal, setdeleteCouponModal] = useState(false);
   const data = coupons;
   const router = useRouter();
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     query
       ? item?.[query]
           ?.toString()

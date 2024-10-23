@@ -23,8 +23,6 @@ export default function CategoriesTable({ AllCategories, refetch }) {
   const [selectedItems, setSelectedItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [showMenu, setShowMenu] = useState(false);
-  const [error, setError] = useState("");
-  const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [CategoryImage, setCategoryImage] = useState(null)
   const [deleteCatModal, setdeleteCatModal] = useState(false)
@@ -35,9 +33,6 @@ const [selectedAddress, setselectedAddress] = useState(null)
   const { auth } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-    setMessage("");
-
 
     const userId = auth ? auth.id : "";
     const categoryName = e.target.categoriesName.value;
@@ -55,18 +50,16 @@ const [selectedAddress, setselectedAddress] = useState(null)
       // setIsLoading(false);
 
       if (response) {
-        setMessage("Category added successfully!");
+        setCategoryImage(null)
         refetch(Math.random())
         setShowMenu(false)
         addCatFormRef.current.reset()
         setIsLoading(false);
+        
       } else {
-        setError("Failed to add category. Please try again.");
       }
     } catch (err) {
       setIsLoading(false);
-      console.log(err)
-      setError("An error occurred while adding the category.");
     }
   };
 
@@ -82,24 +75,9 @@ const [selectedAddress, setselectedAddress] = useState(null)
     }
   };
   const router = useRouter()
-  // console.log(selectedItems)
-  const handleUpdateCategory = async () => {
-    try {
-      selectedItems.forEach((itemId, index) => {
-        setTimeout(() => {
-          window.open(`/dashboard/products/categories/${itemId}`, '_blank');
-        }, index * 1500); // 500 ms delay between opening tabs
-      });
-    } catch (error) {
-      console.log(
-        "An error occurred while updating selected categories.",
-        error
-      );
-    }
-  };
 
   // Filtered data based on search query
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     item?.[query]?.toString().toLowerCase().includes(searchQuery.toLowerCase()) === true
   );
 
@@ -305,7 +283,7 @@ const [selectedAddress, setselectedAddress] = useState(null)
             <Pagination
               currentPage={currentPage}
               dataPerPage={dataPerPage}
-              totalItems={sortedData.length}
+              totalItems={sortedData?.length}
               paginate={paginate}
               showingText={showingText}
               data={sortedData}
@@ -474,12 +452,6 @@ const [selectedAddress, setselectedAddress] = useState(null)
                   </div>
 
 
-                  {error && (
-                    <div className="text-red-500 text-sm mt-2">{error}</div>
-                  )}
-                  {message && (
-                    <div className="text-green-500 text-sm mt-2">{message}</div>
-                  )}
 
                   <button
                     type="submit"

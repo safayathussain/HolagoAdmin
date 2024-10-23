@@ -23,7 +23,7 @@ export default function OutletsTable({ data, setrefetch }) {
   const [deleteOutletModal, setdeleteOutletModal] = useState(false)
   const [selectedOutlet, setselectedOutlet] = useState(null)
   const router = useRouter();
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     query
       ? item?.[query]
           ?.toString()

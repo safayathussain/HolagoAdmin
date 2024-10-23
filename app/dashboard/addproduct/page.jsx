@@ -237,7 +237,6 @@ export default function AddProductPage() {
 
   return (
     <main className="">
-      {isLoading && <Loading />}
 
       <form ref={formRef} onSubmit={handleAddProduct}>
         <section className="mt-10 flex justify-between items-center">

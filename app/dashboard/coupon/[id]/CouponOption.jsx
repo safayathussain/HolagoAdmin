@@ -8,30 +8,33 @@ import DateInput from "@/components/global/input/DateInput";
 import TimeInput from "@/components/global/input/TimeInput";
 import { FetchApi } from "@/utils/FetchApi";
 import Button from "@/components/global/primaryButton/Button";
-import { formatDate, formatEndOfDay } from "@/utils/functions";
+import { disablePastDate, formatDate, formatEndOfDay } from "@/utils/functions";
 import { useRouter } from "next/navigation";
-export default function CouponOption({ type, coupon }) {
-  const [allProducts, setAllProducts] = useState([]);
-  const [allProductsOptions, setAllProductsOptions] = useState([]);
-  const [allCtgOptions, setAllCtgOptions] = useState([]);
-  const [allUsersOptions, setAllUsersOptions] = useState([]);
+export default function CouponOption({
+  type,
+  coupon,
+  id,
+  allProducts,
+  allProductsOptions,
+  allUsersOptions,
+  allCtgOptions,
+}) {
   const router = useRouter();
-  console.log(coupon);
   const [formData, setFormData] = useState({
     code: coupon?.code || "",
     coupon_amount: coupon?.coupon_amount || "",
     allow_free_shipping: coupon?.allow_free_shipping || false,
-    coupon_expiry: new Date(coupon?.coupon_expiry) || "",
-    coupon_expiry_time: new Date(coupon?.coupon_expiry_time) || "",
+    coupon_expiry: coupon?.coupon_expiry ? new Date(coupon?.coupon_expiry) : null,
+    coupon_expiry_time: coupon?.coupon_expiry_time ? new Date(coupon?.coupon_expiry_time) : null,
     minimum_spend: coupon?.minimum_spend || "",
     maximum_spend: coupon?.maximum_spend || "",
     individual_use_only: coupon?.individual_use_only || false,
     exclude_sale_items: coupon?.exclude_sale_items || false,
-    included_products: coupon?.included_products || [],
-    excluded_products: coupon?.excluded_products || [],
-    included_categories: coupon?.included_categories || [],
-    excluded_categories: coupon?.excluded_categories || [],
-    blocked_accounts: coupon?.blocked_accounts || [],
+    included_products: coupon?.included_products?.map(item => (item.id)) || [],
+    excluded_products: coupon?.excluded_products?.map(item => (item.id)) || [],
+    included_categories: coupon?.included_categories?.map(item => (item.id)) || [],
+    excluded_categories: coupon?.excluded_categories?.map(item => (item.id)) || [],
+    blocked_accounts: coupon?.blocked_accounts?.map(item => (item.id)) || [],
     usage_limit_per_coupon: coupon?.usage_limit_per_coupon || "",
     usage_limit_per_user: coupon?.usage_limit_per_user || "",
   });
@@ -48,39 +51,7 @@ export default function CouponOption({ type, coupon }) {
       [name]: value,
     });
   };
-  useEffect(() => {
-    const loadData = async () => {
-      const { data } = await FetchApi({
-        url: "/products/api/get-allProducts",
-      });
-      const { data: ctg } = await FetchApi({
-        url: "/category/api/get-CategoryList",
-      });
-      const { data: users } = await FetchApi({
-        url: "/customer/api/get_all_customers/",
-      });
-      setAllProducts(data?.data);
-      setAllProductsOptions(
-        data?.data?.map((item) => ({
-          label: item.productName,
-          value: item?.id,
-        }))
-      );
-      setAllCtgOptions(
-        ctg?.data?.map((item) => ({
-          label: item.categoryName,
-          value: item?.id,
-        }))
-      );
-      setAllUsersOptions(
-        users?.data?.map((item) => ({
-          label: item?.phone_number,
-          value: item?.id,
-        }))
-      );
-    };
-    loadData();
-  }, []);
+
   console.log(formData);
   const freeShippingText = "Check this box if the coupon grants free shipping.";
   const handleAddCoupon = async () => {
@@ -99,6 +70,28 @@ export default function CouponOption({ type, coupon }) {
       router.push("/dashboard/coupon");
     }
   };
+  const handleEditCoupon = async () => {
+    const { data } = await FetchApi({
+      url: `discount/api/updateDiscount/${id}`,
+      method: "put",
+      isToast: true,
+      body: {
+        ...formData,
+        coupon_expiry: formatDate(formData?.coupon_expiry),
+        coupon_expiry_time: formatEndOfDay(formData?.coupon_expiry_time),
+      },
+      callback: () => {},
+    });
+    if (data?.status === 200) {
+      router.push("/dashboard/coupon");
+    }
+  };
+  console.log(
+    formData.excluded_products.map((item) => ({
+      label: item.productName,
+      value: item.id,
+    }))
+  );
   const couponDataTabs = [
     {
       title: "General",
@@ -149,6 +142,8 @@ export default function CouponOption({ type, coupon }) {
               <h4 className="text-gray-600 text-sm ">Coupon Expiry Date</h4>
               <div className="flex gap-2">
                 <DateInput
+                disabledDate={disablePastDate}
+
                   name="coupon_expiry"
                   value={formData.coupon_expiry}
                   onChange={(value) =>
@@ -247,6 +242,7 @@ export default function CouponOption({ type, coupon }) {
                   onChange={(e) =>
                     handleTagPickerChange("included_products", e)
                   }
+                  defaultValue={formData.included_products}
                   data={allProductsOptions}
                   className="w-full !shadow-none hover:!border-[#e5e5ea] "
                   placeholder="Select Products"
@@ -258,6 +254,7 @@ export default function CouponOption({ type, coupon }) {
               <div className="col-span-2">
                 <TagPicker
                   name="excluded_products"
+                  defaultValue={formData.excluded_products}
                   onChange={(e) =>
                     handleTagPickerChange("excluded_products", e)
                   }
@@ -272,6 +269,7 @@ export default function CouponOption({ type, coupon }) {
               <div className="col-span-2">
                 <TagPicker
                   name="included_categories"
+                  defaultValue={formData.included_categories}
                   onChange={(e) =>
                     handleTagPickerChange("included_categories", e)
                   }
@@ -286,6 +284,7 @@ export default function CouponOption({ type, coupon }) {
               <div className="col-span-2">
                 <TagPicker
                   name="excluded_categories"
+                  defaultValue={formData.excluded_categories}
                   onChange={(e) =>
                     handleTagPickerChange("excluded_categories", e)
                   }
@@ -300,6 +299,7 @@ export default function CouponOption({ type, coupon }) {
               <div className="col-span-2">
                 <TagPicker
                   name="blocked_accounts"
+                  defaultValue={formData.blocked_accounts}
                   onChange={(e) => handleTagPickerChange("blocked_accounts", e)}
                   data={allUsersOptions}
                   className="w-full !shadow-none hover:!border-[#e5e5ea] "
@@ -348,7 +348,10 @@ export default function CouponOption({ type, coupon }) {
     <div>
       <div>
         <div className="flex justify-end">
-          <Button size="sm" onClick={handleAddCoupon}>
+          <Button
+            size="sm"
+            onClick={type === "add" ? handleAddCoupon : handleEditCoupon}
+          >
             {type === "add" ? "Add Coupon" : "Save Changes"}
           </Button>
         </div>

@@ -113,3 +113,18 @@ export const formatInternationalDate = (isoDateString) => {
 
   return date.toLocaleString('en-US', options);
 };
+
+export const disablePastDate = (date) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Set time to midnight to compare only the date
+  return date < today; // Disable any date before today
+};
+export function formatNumberInK(num) {
+  if (num < 1000) {
+    return num.toString(); // return the number as a string if less than 1000
+  } else if (num < 1000000) {
+    return (num / 1000).toFixed(2) + 'k'; // format as 'x.xxk'
+  } else {
+    return (num / 1000000).toFixed(2) + 'M'; // format as 'x.xxM'
+  }
+}

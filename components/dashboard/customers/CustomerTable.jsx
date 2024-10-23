@@ -27,7 +27,7 @@ export default function CustomersTable() {
     };
     loadData();
   }, []);
-  const filteredData = data.filter((item) =>
+  const filteredData = data?.filter((item) =>
     query
       ? item?.[query]
           ?.toString()
@@ -240,7 +240,7 @@ export default function CustomersTable() {
           <Pagination
             currentPage={currentPage}
             dataPerPage={dataPerPage}
-            totalItems={sortedData.length}
+            totalItems={sortedData?.length}
             paginate={paginate}
             showingText={showingText}
             data={sortedData}
