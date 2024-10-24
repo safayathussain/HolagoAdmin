@@ -1,7 +1,7 @@
 "use client";
 
 import LocationData from "./LocationData";
-import SalesGraph from "./salesGraph";
+import SalesGraph from "./SalesGraph";
 
 export default function OverView({ data }) {
   return (
