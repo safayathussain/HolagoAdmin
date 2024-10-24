@@ -48,7 +48,7 @@ const Page = () => {
             toast.success('OTP resend successfully')
         }else {
             toast.error('Something went wrong')
-
+// 
         }
     }
     return (
